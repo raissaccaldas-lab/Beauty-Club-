@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Marco Zero — COPPE/UFRJ | Beauty Club Co.</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Chart.js CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              rose: '#C4846A',
+              darkRose: '#A9684F',
+              lightRose: '#E8B4A0',
+              peach: '#F8ECE6',
+              coppe: '#0284c7',
+              dark: '#140e0b',
+              panel: '#1e1612'
+            }
+          },
+          fontFamily: {
+            serif: ['"Playfair Display"', 'serif'],
+            sans: ['Montserrat', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    .glass-card {
+      background: rgba(30, 22, 18, 0.78);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid rgba(232, 180, 160, 0.16);
+    }
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(20, 14, 11, 0.6);
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: #C4846A;
+      border-radius: 4px;
+    }
+  </style>
+</head>
+
+<body class="bg-[#120b08] text-[#f4e6dd] font-sans antialiased min-h-screen flex flex-col selection:bg-[#C4846A] selection:text-white">
+
+  <!-- TOPO: HEADER OFICIAL DO EDITAL COPPE / UFRJ -->
+  <header class="w-full bg-[#1a110d]/95 border-b border-[#C4846A]/20 sticky top-0 z-40 px-4 sm:px-6 py-3 backdrop-blur-md">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-4">
+      
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-[#A9684F] to-[#E8B4A0] flex items-center justify-center text-[#1c1410] font-bold text-lg shadow-md shadow-[#C4846A]/20 shrink-0">
+          <i class="fa-solid fa-graduation-cap"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="text-[10px] font-bold tracking-widest uppercase bg-[#0284c7]/20 text-[#38bdf8] px-2 py-0.5 rounded border border-[#0284c7]/40">
+              COPPE / UFRJ • Edital Marco Zero 2026
+            </span>
+            <span class="text-xs text-amber-400 font-semibold flex items-center gap-1">
+              <i class="fa-solid fa-hand-holding-heart"></i> Linha: Inovação Social (ISBT)
+            </span>
+          </div>
+          <h1 class="text-base sm:text-lg font-serif font-bold text-stone-100 flex items-center gap-2">
+            Beauty Club <span class="text-xs font-sans font-normal text-stone-400 hidden sm:inline">— Raíssa Caldas & Marcela Veiga</span>
+          </h1>
+        </div>
+      </div>
+
+      <!-- Navegação das 4 Abas Estratégicas -->
+      <div class="flex items-center bg-[#251812] p-1 rounded-xl border border-[#C4846A]/20 text-xs overflow-x-auto max-w-full">
+        <button id="tabBtnScore" onclick="switchTab('score')" class="px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-[#C4846A] text-white shadow whitespace-nowrap">
+          <i class="fa-solid fa-clipboard-check mr-1"></i> Régua Edital (100 pts)
+        </button>
+        <button id="tabBtnFinance" onclick="switchTab('finance')" class="px-3.5 py-1.5 rounded-lg font-semibold text-stone-300 hover:text-white transition-all whitespace-nowrap">
+          <i class="fa-solid fa-calculator mr-1"></i> Viabilidade & Break-Even
+        </button>
+        <button id="tabBtnHardQA" onclick="switchTab('hardqa')" class="px-3.5 py-1.5 rounded-lg font-semibold text-stone-300 hover:text-white transition-all whitespace-nowrap">
+          <i class="fa-solid fa-fire-flame-curved mr-1"></i> Sabatina "Perguntas Cabeludas"
+        </button>
+        <button id="tabBtnTheory" onclick="switchTab('theory')" class="px-3.5 py-1.5 rounded-lg font-semibold text-stone-300 hover:text-white transition-all whitespace-nowrap">
+          <i class="fa-solid fa-book-bookmark mr-1"></i> Literatura & Moat
+        </button>
+      </div>
+
+      <!-- Selo de Status COPPE -->
+      <div class="hidden xl:flex items-center gap-3 bg-[#241712] border border-emerald-500/30 px-3 py-1.5 rounded-lg">
+        <div class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></div>
+        <div class="text-right">
+          <p class="text-[10px] text-stone-400 font-medium">Classificação Preliminar:</p>
+          <p class="text-xs font-bold text-emerald-300">86.5 / 100 • ZONA DE INCUBAÇÃO</p>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- CONTEÚDO DINÂMICO -->
+  <main class="flex-1 max-w-7xl w-full mx-auto p-4 sm:p-6 custom-scroll">
+
+    <!-- ==================== ABA 1: RÉGUA OFICIAL DO EDITAL COPPE/UFRJ (100 PONTOS) ==================== -->
+    <div id="tabContentScore" class="space-y-6">
+
+      <!-- CARDS DE DESTAQUE ALINHADOS AO EDITAL -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-l-[#0284c7] shadow-lg">
+          <span class="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">Pontuação Edital UFRJ</span>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-4xl font-serif font-bold text-[#38bdf8]">86.5</span>
+            <span class="text-xs text-stone-400">/ 100 pontos</span>
+          </div>
+          <p class="text-[11px] text-emerald-400 mt-2 flex items-center gap-1">
+            <i class="fa-solid fa-circle-check"></i> Corte mínimo: 51 pts (Apto)
+          </p>
+        </div>
+
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-l-amber-500 shadow-lg">
+          <span class="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">ODS Prioritários (Edital 5.4)</span>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-serif font-bold text-amber-300">ODS 8 & 4</span>
+          </div>
+          <p class="text-[11px] text-stone-300 mt-2">
+            Trabalho Digno + Inclusão de MEIs
+          </p>
+        </div>
+
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-l-emerald-500 shadow-lg">
+          <span class="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">Oferta MEI de Beleza</span>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-serif font-bold text-emerald-400">94%</span>
+            <span class="text-xs text-stone-400">novos negócios 2025</span>
+          </div>
+          <p class="text-[11px] text-stone-300 mt-2">
+            236 mil pequenos negócios (Sebrae)
+          </p>
+        </div>
+
+        <div class="glass-card p-4 rounded-2xl border-l-4 border-l-rose-400 shadow-lg">
+          <span class="text-[11px] font-semibold text-stone-400 uppercase tracking-wider">Compromisso Piloto</span>
+          <div class="mt-2 flex items-baseline gap-2">
+            <span class="text-3xl font-serif font-bold text-white">60 Dias</span>
+          </div>
+          <p class="text-[11px] text-stone-300 mt-2">
+            1ª Venda paga manual (WhatsApp/Pix)
+          </p>
+        </div>
+
+      </div>
+
+      <!-- RADAR COPPE E DETALHAMENTO DOS 7 CRITÉRIOS DO EDITAL -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
+        
+        <!-- Radar dos Critérios Oficiais -->
+        <div class="lg:col-span-5 glass-card p-5 rounded-2xl flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <h2 class="text-sm font-bold uppercase tracking-wider text-[#E8B4A0] font-serif">
+                Régua dos 7 Critérios (Item 6.5)
+              </h2>
+              <span class="text-[10px] bg-[#0284c7]/20 text-[#38bdf8] px-2 py-0.5 rounded border border-[#0284c7]/30">Edital COPPE</span>
+            </div>
+            <p class="text-xs text-stone-400 mb-4">
+              Mapeamento de notas ponderadas com base na banca de Inovação Social.
+            </p>
+          </div>
+          <div class="relative w-full h-[270px] flex items-center justify-center">
+            <canvas id="coppeRadarChart"></canvas>
+          </div>
+          <div class="mt-4 pt-3 border-t border-stone-800 text-[11px] text-stone-400 flex items-center justify-between">
+            <span>Nota de corte da COPPE: <strong>51.0</strong></span>
+            <span class="text-emerald-400 font-bold">Nota Beauty Club: 86.5</span>
+          </div>
+        </div>
+
+        <!-- Lista dos 7 Critérios Oficiais do Edital -->
+        <div class="lg:col-span-7 glass-card p-5 rounded-2xl flex flex-col justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-[#E8B4A0] font-serif mb-3 flex items-center justify-between">
+            <span>Avaliação por Critério Oficial do Edital</span>
+            <span class="text-[11px] font-sans text-stone-400">Total Possível: 100 pts</span>
+          </h2>
+
+          <div class="space-y-2.5 text-xs">
+            
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">1. Relevância Social (Teto: 20 pts)</span>
+                <p class="text-stone-400 text-[11px]">Alinhamento com ODS 8 (Trabalho Digno) e ODS 4 (Inclusão de MEIs da estética).</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">18.0 / 20</span>
+            </div>
+
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">2. Inovação (Teto: 15 pts)</span>
+                <p class="text-stone-400 text-[11px]">Inovação de processo: compra coletiva curada + jornada de confiança em vez de balcão de cupom.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">13.0 / 15</span>
+            </div>
+
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">3. Viabilidade Técnica e Econômica (Teto: 10 pts)</span>
+                <p class="text-stone-400 text-[11px]">Decisão acertada de split de pagamento + validação manual (sem gastar capital precocemente).</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-amber-950 text-amber-300 font-bold border border-amber-800">8.5 / 10</span>
+            </div>
+
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">4. Qualificação e Capacidade da Equipe (Teto: 10 pts)</span>
+                <p class="text-stone-400 text-[11px]">Raíssa (Biomedicina/Produto/Validação) + Marcela (Jurídico/Compliance/Operação).</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">9.5 / 10</span>
+            </div>
+
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">5. Escalabilidade & Impacto nos Territórios (Teto: 15 pts)</span>
+                <p class="text-stone-400 text-[11px]">Estratégia de densidade por bairros + absorção de alunas formadas pelas oficinas públicas.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">12.5 / 15</span>
+            </div>
+
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">6. Aderência aos Propósitos da Incubadora (Teto: 15 pts)</span>
+                <p class="text-stone-400 text-[11px]">Demanda explícita pelo que a COPPE oferece: Fábrica de Software e Consultoria Jurídica.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">13.5 / 15</span>
+            </div>
+
+            <div class="bg-[#241712] p-2.5 rounded-xl border border-stone-800 flex justify-between items-center">
+              <div>
+                <span class="font-bold text-stone-200">7. Qualidade da Proposta Escrita & Pitch (Teto: 15 pts)</span>
+                <p class="text-stone-400 text-[11px]">Pitch limpo, slides objetivos, reconhecimento maduro dos riscos de regulação e tração.</p>
+              </div>
+              <span class="px-2.5 py-1 rounded bg-emerald-950 text-emerald-300 font-bold border border-emerald-800">11.5 / 15</span>
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== ABA 2: SIMULADOR FINANCEIRO & BREAK-EVEN ==================== -->
+    <div id="tabContentFinance" class="hidden space-y-6">
+
+      <!-- BANNER DE CONTEXTO FINANCEIRO -->
+      <div class="glass-card p-5 rounded-2xl border-l-4 border-l-emerald-500 shadow-lg">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+          <div>
+            <h2 class="text-base font-bold text-white font-serif flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-emerald-400"></i> Modelagem de Unit Economics e Ponto de Equilíbrio (Break-Even)
+            </h2>
+            <p class="text-xs text-stone-300 mt-1">
+              "A rotina cria frequência; a estética sustenta a margem." — Simule se a comissão de 8% a 15% cobre os custos operacionais da startup.
+            </p>
+          </div>
+          <span class="text-xs bg-emerald-950 border border-emerald-800 text-emerald-300 px-3 py-1 rounded-full font-mono">
+            Modelo de Take Rate Bilateral
+          </span>
+        </div>
+      </div>
+
+      <!-- CALCULADORA INTERATIVA -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Controles de Simulação -->
+        <div class="lg:col-span-5 glass-card p-5 rounded-2xl space-y-4">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-[#E8B4A0] border-b border-stone-800 pb-2">
+            Parâmetros Operacionais da Startup
+          </h3>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-stone-300">Custo Fixo Mensal da Startup:</span>
+              <span id="labelFixedCost" class="font-bold text-amber-300 font-mono">R$ 6.500</span>
+            </div>
+            <input type="range" id="inputFixedCost" min="2000" max="25000" step="500" value="6500" oninput="calcBreakEven()" class="w-full accent-[#C4846A]">
+            <p class="text-[10px] text-stone-400 mt-0.5">Inclui: Ferramentas SaaS, servidores, contador, marketing e pró-labore inicial.</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-stone-300">Take Rate Médio na Estética:</span>
+              <span id="labelTakeRateAesth" class="font-bold text-emerald-400 font-mono">12.0%</span>
+            </div>
+            <input type="range" id="inputTakeRateAesth" min="8" max="18" step="0.5" value="12" oninput="calcBreakEven()" class="w-full accent-emerald-500">
+            <p class="text-[10px] text-stone-400 mt-0.5">Slide 6: Faixa projetada de 8% a 15% para procedimentos estéticos.</p>
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-stone-300">Ticket Médio de Estética (Combo/Botox):</span>
+              <span id="labelTicketAesth" class="font-bold text-white font-mono">R$ 450</span>
+            </div>
+            <input type="range" id="inputTicketAesth" min="200" max="1200" step="50" value="450" oninput="calcBreakEven()" class="w-full accent-[#C4846A]">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-stone-300">Procedimentos de Estética / Mês:</span>
+              <span id="labelVolAesth" class="font-bold text-[#38bdf8] font-mono">80</span>
+            </div>
+            <input type="range" id="inputVolAesth" min="10" max="400" step="5" value="80" oninput="calcBreakEven()" class="w-full accent-[#0284c7]">
+          </div>
+
+          <div class="pt-2 border-t border-stone-800">
+            <div class="flex justify-between text-xs mb-1">
+              <span class="text-stone-300">Atendimentos de Rotina / Mês (Nail/Cílios):</span>
+              <span id="labelVolRoutine" class="font-bold text-rose-300 font-mono">150</span>
+            </div>
+            <input type="range" id="inputVolRoutine" min="0" max="800" step="25" value="150" oninput="calcBreakEven()" class="w-full accent-rose-400">
+            <p class="text-[10px] text-stone-400 mt-0.5">Ticket R$ 80 com taxa de 6% (cobre split e gera frequência).</p>
+          </div>
+
+        </div>
+
+        <!-- Resultados e Ponto de Equilíbrio -->
+        <div class="lg:col-span-7 glass-card p-5 rounded-2xl flex flex-col justify-between space-y-4">
+          
+          <div>
+            <h3 class="text-xs font-bold uppercase tracking-wider text-[#E8B4A0] border-b border-stone-800 pb-2">
+              DRE Gerencial Sintética Mensal
+            </h3>
+
+            <div class="grid grid-cols-2 sm:grid-cols-3 gap-3 mt-3">
+              <div class="bg-[#241712] p-3 rounded-xl border border-stone-800">
+                <span class="text-[10px] text-stone-400 uppercase font-semibold">GMV Transacionado</span>
+                <p id="resGMV" class="text-lg font-bold text-white font-mono mt-1">R$ 48.000</p>
+                <span class="text-[10px] text-stone-400">Volume total de mercado</span>
+              </div>
+
+              <div class="bg-[#241712] p-3 rounded-xl border border-stone-800">
+                <span class="text-[10px] text-stone-400 uppercase font-semibold">Receita Bruta Beauty Club</span>
+                <p id="resNetRev" class="text-lg font-bold text-emerald-400 font-mono mt-1">R$ 5.040</p>
+                <span class="text-[10px] text-stone-400">Take rate ponderado</span>
+              </div>
+
+              <div class="bg-[#241712] p-3 rounded-xl border border-stone-800 col-span-2 sm:col-span-1">
+                <span class="text-[10px] text-stone-400 uppercase font-semibold">Taxas de Split Gateway</span>
+                <p id="resGatewayCost" class="text-lg font-bold text-rose-400 font-mono mt-1">R$ 1.150</p>
+                <span class="text-[10px] text-stone-400">~2.2% Pagar.me/Asaas</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Ponto de Equilíbrio em Destaque -->
+          <div class="p-4 rounded-xl border bg-gradient-to-r from-[#2c1d17] to-[#1f140f] border-[#C4846A]/40">
+            <div class="flex items-center justify-between">
+              <div>
+                <span class="text-xs font-bold text-amber-300 uppercase tracking-wider">Ponto de Equilíbrio Operacional (Break-Even)</span>
+                <p class="text-[11px] text-stone-300 mt-0.5">Quantos procedimentos estéticos mensais pagam a estrutura:</p>
+              </div>
+              <div class="text-right">
+                <span id="resBreakEvenCount" class="text-2xl font-bold font-mono text-white">128</span>
+                <span class="text-xs text-stone-400"> proced./mês</span>
+              </div>
+            </div>
+            
+            <!-- Barra de Progresso em Relação ao Break-Even -->
+            <div class="w-full bg-stone-900 rounded-full h-3.5 mt-3 overflow-hidden p-0.5 border border-stone-700">
+              <div id="breakEvenBar" class="h-full rounded-full transition-all duration-500 bg-amber-400" style="width: 62%;"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-stone-400 mt-1 font-mono">
+              <span>0 proced.</span>
+              <span id="breakEvenStatus">62% da meta de sustentabilidade</span>
+              <span id="breakEvenTarget">Meta: 128</span>
+            </div>
+          </div>
+
+          <!-- Diagnóstico para a Banca -->
+          <div class="bg-[#1c120d] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+            <strong class="text-[#E8B4A0] flex items-center gap-1 mb-1">
+              <i class="fa-solid fa-lightbulb"></i> Resposta do Empresário para a Banca da COPPE:
+            </strong>
+            <p id="financialVerdict">
+              "Com custo operacional enxuto de <strong>R$ 6.500/mês</strong>, a Beauty Club atinge o ponto de equilíbrio com <strong>128 atendimentos de estética/mês</strong> (cerca de 5 a 6 Beauty Days de 22 clientes). A rotina funciona como esteira de aquisição (CAC reduzido), e a estética garante a rentabilidade líquida."
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- ==================== ABA 3: SABATINA "PERGUNTAS CABELUDAS" DA BANCA ==================== -->
+    <div id="tabContentHardQA" class="hidden space-y-4">
+      
+      <div class="glass-card p-5 rounded-2xl mb-4 shadow-lg border-l-4 border-l-rose-500">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div>
+            <h2 class="text-base sm:text-lg font-serif font-bold text-white flex items-center gap-2">
+              <i class="fa-solid fa-skull-crossbones text-rose-400"></i> Sabatina Cabeluda: As Perguntas Mais Duras da Banca
+            </h2>
+            <p class="text-xs text-stone-300 mt-1">
+              Professores da COPPE e investidores de inovação social não aceitam respostas superficiais. Veja como responder nos pontos mais vulneráveis.
+            </p>
+          </div>
+          <span class="px-3 py-1 bg-rose-950/80 border border-rose-800 text-rose-300 rounded-full text-xs font-semibold">
+            6 Perguntas Fatais
+          </span>
+        </div>
+      </div>
+
+      <!-- Pergunta 1: Inovação Social Real vs. Futilidade -->
+      <div class="glass-card p-4 sm:p-5 rounded-2xl shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-rose-500/40">
+            Q1
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-white mb-1">
+              "Vocês estão num edital de INOVAÇÃO SOCIAL. Procedimento estético e botox não são amenidades supérfluas para classe média? Onde está o impacto social real para a COPPE/UFRJ?"
+            </h3>
+            <div class="mt-2.5 bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <div class="text-[#E8B4A0] font-bold mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-bullseye"></i> Como Responder na Banca:
+              </div>
+              <p>
+                "Professor, nossa resposta está respaldada no <strong>ODS 8 (Trabalho Digno)</strong> e nos dados oficiais do Sebrae 2025: <strong>94% dos novos negócios de beleza são MEIs</strong>, compostos majoritariamente por mulheres autônomas que vivem na informalidade, com renda instável e reféns de calotes ou cancelamentos. O impacto social da Beauty Club atua nos dois lados da cadeia: do lado da oferta, <strong>garante renda previsível e antecipada</strong> para essas profissionais através de lotes fechados no Beauty Day; do lado da demanda, democratiza o acesso seguro para mulheres da classe B/C, evitando que caiam em clínicas clandestinas que causam mutilações faciais (um passivo que superlota o SUS)."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pergunta 2: Responsabilidade Solidária Jurídica (CDC Art. 14) -->
+      <div class="glass-card p-4 sm:p-5 rounded-2xl shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-rose-500/40">
+            Q2
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-white mb-1">
+              "A legislação brasileira (Art. 14 do CDC) considera a plataforma intermediadora solidariamente responsável por danos ao consumidor. Se uma biomédica parceira necrosar o lábio de uma cliente, a Beauty Club vai falir processada?"
+            </h3>
+            <div class="mt-2.5 bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <div class="text-[#E8B4A0] font-bold mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-scale-balanced"></i> Defesa Jurídica da Marcela:
+              </div>
+              <p>
+                "Essa é a razão exata pela qual temos no time fundador a Marcela liderando o jurídico. Três travas operacionais blindam a Beauty Club: <strong>1) Escopo estrito no MVP:</strong> nada invasivo de alto risco cirúrgico nos primeiros 6 meses; <strong>2) Pré-requisito de seguro de responsabilidade civil profissional</strong> e certidão negativa de processo ético no CRM/CRBM/CRO; e <strong>3) Split direto de pagamento:</strong> a plataforma é mero agente de agendamento e curadoria de documentos, sem manipulação do ato médico. Inclusive, um dos nossos pedidos ao Marco Zero é justamente a <em>Orientação Jurídica</em> para redigir os termos de adesão e mitigar a solidariedade na cadeia de consumo."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pergunta 3: Defensabilidade e Desintermediação (Moat) -->
+      <div class="glass-card p-4 sm:p-5 rounded-2xl shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-rose-500/40">
+            Q3
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-white mb-1">
+              "Marketplaces de serviços sofrem com vazamento de plataforma: a cliente faz o primeiro atendimento e depois combina direto no WhatsApp com a profissional para economizar os 12%. Como vocês evitam isso?"
+            </h3>
+            <div class="mt-2.5 bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <div class="text-[#E8B4A0] font-bold mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-lock"></i> Mecanismo Anti-Vazamento (Teoria de Plataformas):
+              </div>
+              <p>
+                "Na estética individual, a desintermediação acontece porque o valor agregado da plataforma acaba no agendamento. Na Beauty Club, o desconto só existe <strong>porque a demanda está agrupada</strong>: a profissional não cobra R$ 350 no particular de uma pessoa isolada; ela só dá esse valor se fechar o grupo de 20 pessoas no Beauty Day. Se a cliente tentar marcar avulso por fora, pagará o preço de balcão (R$ 550). Além disso, o histórico digital de prontuário, garantias e os níveis Bronze, Prata e Ouro só acumulam transacionando via plataforma."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pergunta 4: Economia de Cupom (Síndrome Peixe Urbano) -->
+      <div class="glass-card p-4 sm:p-5 rounded-2xl shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-rose-500/40">
+            Q4
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-white mb-1">
+              "Por que o modelo de vocês não vai quebrar como o Peixe Urbano e o Groupon quebraram?"
+            </h3>
+            <div class="mt-2.5 bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <div class="text-[#E8B4A0] font-bold mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-shield-halved"></i> Resposta de Posicionamento:
+              </div>
+              <p>
+                "Os sites de cupons quebraram porque praticavam <strong>leilão reverso predatório</strong>: espremiam a margem do parceiro até ele ter prejuízo, o que gerava atendimento com má vontade, insumos de baixa qualidade e destruição da confiança. Na Beauty Club, a profissional mantém sua autonomia de preço e define o número de vagas. O ganho é em <strong>ocupação de tempo ocioso</strong>. Nós não vendemos desconto: vendemos <em>curadoria com acesso</em>. Nossas respondentes citaram espontaneamente que jamais arriscariam o rosto por cupom barato."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pergunta 5: Split de Pagamento e Tributação / Bacen -->
+      <div class="glass-card p-4 sm:p-5 rounded-2xl shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-rose-500/40">
+            Q5
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-white mb-1">
+              "Se a Beauty Club recebe R$ 500 do cliente e repassa R$ 440 para a clínica, vocês vão emitir nota de R$ 500 e pagar imposto sobre o faturamento do médico, quebrando a margem?"
+            </h3>
+            <div class="mt-2.5 bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <div class="text-[#E8B4A0] font-bold mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-coins"></i> Resposta Tributária e de Arquitetura:
+              </div>
+              <p>
+                "De forma alguma. Decidimos no desenho de MVP utilizar <strong>split de pagamento automatizado</strong> (via Pagar.me, Asaas ou Iugu). O gateway processa o pagamento do cliente e divide na liquidação bancária: 88% cai diretamente na conta jurídica da clínica, e 12% na conta da Beauty Club como taxa de corretagem/intermediação (com emissão de NFS-e apenas sobre o take rate). A Beauty Club nunca toca no dinheiro do procedimento, eliminando bi-tributação e necessidade de licença financeira do Banco Central."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pergunta 6: Tração Real ("Cadê a Venda?") -->
+      <div class="glass-card p-4 sm:p-5 rounded-2xl shadow-lg">
+        <div class="flex items-start gap-3">
+          <div class="w-8 h-8 rounded-full bg-rose-500/20 text-rose-300 flex items-center justify-center font-bold text-xs shrink-0 mt-0.5 border border-rose-500/40">
+            Q6
+          </div>
+          <div class="flex-1">
+            <h3 class="text-sm font-bold text-white mb-1">
+              "Vocês entrevistaram 127 mulheres e 3 profissionais, mas até agora ninguém pagou nada. Como provar que isso não é apenas uma boa ideia acadêmica?"
+            </h3>
+            <div class="mt-2.5 bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <div class="text-[#E8B4A0] font-bold mb-1.5 flex items-center gap-1.5">
+                <i class="fa-solid fa-rocket"></i> Honestidade Intelectual e Ação Imediata:
+              </div>
+              <p>
+                "Concordamos 100% com a banca: intenção de pesquisa não paga conta. Por isso, colocamos no Slide 7 do pitch como <strong>Risco Principal: Ainda não houve transação paga</strong>. Em vez de gastar 6 meses codificando software, nosso compromisso no Marco Zero é rodar o <strong>primeiro grupo piloto manual via WhatsApp e Pix nos primeiros 60 dias</strong>. Se 15 mulheres pagarem e forem atendidas no primeiro Beauty Day com NPS &gt; 70, teremos a prova de fogo que a Fábrica de Software da COPPE precisa para automatizar."
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ==================== ABA 4: LITERATURA & DEFENSIBILIDADE (MOAT) ==================== -->
+    <div id="tabContentTheory" class="hidden space-y-6">
+
+      <div class="glass-card p-6 rounded-2xl shadow-lg">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 pb-4 border-b border-stone-800">
+          <div>
+            <h2 class="text-xl font-serif font-bold text-white">Arcabouço Teórico & Modelagem de Negócio</h2>
+            <p class="text-xs text-stone-400 mt-1">Conceitos fundamentais da economia de plataformas (Two-Sided Markets) aplicados à Beauty Club.</p>
+          </div>
+          <span class="px-3 py-1 rounded bg-[#0284c7]/20 text-[#38bdf8] text-xs font-semibold">
+            Teoria de Evans, Schmalensee & Hagiu
+          </span>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-6">
+          
+          <div class="space-y-2">
+            <h3 class="text-xs font-bold uppercase text-[#E8B4A0] tracking-wider">1. Efeito de Rede Indireto</h3>
+            <div class="bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <p>Mais clientes atraem mais clínicas qualificadas, o que por sua vez atrai mais clientes. No entanto, em serviços locais, o efeito de rede é <strong>densamente geográfico</strong> (raio de 3 a 5 km). Por isso, a COPPE nos apoia a dominar um único bairro antes de tentar escala estadual.</p>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-bold uppercase text-[#E8B4A0] tracking-wider">2. Teoria da Assimetria de Informação (Akerlof)</h3>
+            <div class="bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <p>O mercado de estética sofre do efeito "Mercado de Limões" (George Akerlof): na ausência de curadoria, o consumidor desconfia que todo preço baixo esconde insumo adulterado. A verificação do CRM/CRBM restaura o <strong>sinal de qualidade confiável</strong>.</p>
+            </div>
+          </div>
+
+          <div class="space-y-2">
+            <h3 class="text-xs font-bold uppercase text-[#E8B4A0] tracking-wider">3. O "Moat" (Vantagem Competitiva Duradoura)</h3>
+            <div class="bg-[#241712] p-3.5 rounded-xl border border-stone-800 text-xs text-stone-300 leading-relaxed">
+              <p>Tecnologia de agendamento é commodity (qualquer desenvolvedor cria em duas semanas). O verdadeiro fosso defensável da Beauty Club é a <strong>reputação acumulada</strong>, a governança de auditoria de conselhos e o pertencimento à comunidade local.</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- RODAPÉ DE AUDITORIA E APOIO -->
+  <footer class="w-full bg-[#18100c] border-t border-stone-800 px-4 sm:px-6 py-3 shrink-0 flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-stone-400">
+    <div class="flex items-center gap-2">
+      <i class="fa-solid fa-building-columns text-[#0284c7]"></i>
+      <span>Ambiente de Preparação para Defesa • <strong>Edital Marco Zero UFRJ / COPPE 2026</strong></span>
+    </div>
+    <div class="flex items-center gap-3">
+      <span>Proponentes: <strong class="text-stone-200">Raíssa Caldas & Marcela Veiga</strong></span>
+    </div>
+  </footer>
+
+  <script>
+    // Gerenciador de Abas
+    function switchTab(tabId) {
+      const tabs = ['score', 'finance', 'hardqa', 'theory'];
+      tabs.forEach(t => {
+        document.getElementById(`tabContent${capitalize(t)}`).classList.add('hidden');
+        document.getElementById(`tabBtn${capitalize(t)}`).className = "px-3.5 py-1.5 rounded-lg font-semibold text-stone-300 hover:text-white transition-all whitespace-nowrap";
+      });
+
+      document.getElementById(`tabContent${capitalize(tabId)}`).classList.remove('hidden');
+      document.getElementById(`tabBtn${capitalize(tabId)}`).className = "px-3.5 py-1.5 rounded-lg font-semibold transition-all bg-[#C4846A] text-white shadow whitespace-nowrap";
+
+      if (tabId === 'score') {
+        renderRadarChart();
+      }
+    }
+
+    function capitalize(s) {
+      if (s === 'hardqa') return 'HardQA';
+      return s.charAt(0).toUpperCase() + s.slice(1);
+    }
+
+    // Calculadora Financeira de Break-Even em Tempo Real
+    function calcBreakEven() {
+      const fixedCost = parseFloat(document.getElementById('inputFixedCost').value);
+      const takeRateAesth = parseFloat(document.getElementById('inputTakeRateAesth').value) / 100;
+      const ticketAesth = parseFloat(document.getElementById('inputTicketAesth').value);
+      const volAesth = parseInt(document.getElementById('inputVolAesth').value);
+      const volRoutine = parseInt(document.getElementById('inputVolRoutine').value);
+
+      // Labels dinâmicos
+      document.getElementById('labelFixedCost').textContent = `R$ ${fixedCost.toLocaleString('pt-BR')}`;
+      document.getElementById('labelTakeRateAesth').textContent = `${(takeRateAesth * 100).toFixed(1)}%`;
+      document.getElementById('labelTicketAesth').textContent = `R$ ${ticketAesth.toLocaleString('pt-BR')}`;
+      document.getElementById('labelVolAesth').textContent = volAesth;
+      document.getElementById('labelVolRoutine').textContent = volRoutine;
+
+      // Cálculos
+      const ticketRoutine = 80;
+      const takeRateRoutine = 0.06; // 6%
+
+      const gmvAesth = volAesth * ticketAesth;
+      const gmvRoutine = volRoutine * ticketRoutine;
+      const totalGMV = gmvAesth + gmvRoutine;
+
+      const revAesth = gmvAesth * takeRateAesth;
+      const revRoutine = gmvRoutine * takeRateRoutine;
+      const totalRev = revAesth + revRoutine;
+
+      // Custo de split gateway de 2.2% sobre GMV
+      const gatewayCost = totalGMV * 0.022;
+      const netMarginContrib = totalRev - gatewayCost;
+
+      // Break-even em procedimentos de estética (assumindo que rotina complementa)
+      const unitMarginAesth = (ticketAesth * takeRateAesth) - (ticketAesth * 0.022);
+      const remainingCostToCover = Math.max(0, fixedCost - (revRoutine - (gmvRoutine * 0.022)));
+      const breakEvenProcedures = unitMarginAesth > 0 ? Math.ceil(remainingCostToCover / unitMarginAesth) : 999;
+
+      // Exibição nos cards
+      document.getElementById('resGMV').textContent = `R$ ${Math.round(totalGMV).toLocaleString('pt-BR')}`;
+      document.getElementById('resNetRev').textContent = `R$ ${Math.round(totalRev).toLocaleString('pt-BR')}`;
+      document.getElementById('resGatewayCost').textContent = `R$ ${Math.round(gatewayCost).toLocaleString('pt-BR')}`;
+      document.getElementById('resBreakEvenCount').textContent = breakEvenProcedures;
+
+      // Barra de sustentabilidade
+      const progressPct = Math.min(100, Math.round((volAesth / breakEvenProcedures) * 100));
+      const bar = document.getElementById('breakEvenBar');
+      bar.style.width = `${progressPct}%`;
+
+      const statusText = document.getElementById('breakEvenStatus');
+      const targetText = document.getElementById('breakEvenTarget');
+      targetText.textContent = `Meta: ${breakEvenProcedures} proced.`;
+
+      if (progressPct >= 100) {
+        bar.className = "h-full rounded-full transition-all duration-500 bg-emerald-400";
+        statusText.innerHTML = `<span class="text-emerald-400 font-bold">OPERANDO NO LUCRO (+${Math.round(netMarginContrib - fixedCost).toLocaleString('pt-BR')} R$)</span>`;
+      } else {
+        bar.className = "h-full rounded-full transition-all duration-500 bg-amber-400";
+        statusText.innerHTML = `<span>${progressPct}% do Ponto de Equilíbrio</span>`;
+      }
+
+      // Veredito textual
+      const beautyDays = Math.ceil(breakEvenProcedures / 22);
+      document.getElementById('financialVerdict').innerHTML = `
+        "Com um custo fixo de <strong>R$ ${fixedCost.toLocaleString('pt-BR')}</strong>, a Beauty Club atinge o ponto de equilíbrio operacional com <strong>${breakEvenProcedures} procedimentos de estética/mês</strong>. Isso equivale a aproximadamente <strong>${beautyDays} edições do Beauty Day</strong> (com 20 a 25 clientes cada). O volume transacionado total da rede será de R$ ${Math.round(breakEvenProcedures * ticketAesth).toLocaleString('pt-BR')}, comprovando a sustentabilidade do take rate de ${(takeRateAesth * 100).toFixed(0)}%."
+      `;
+    }
+
+    // Gráfico de Radar do Edital COPPE
+    let radarInstance = null;
+    function renderRadarChart() {
+      const canvas = document.getElementById('coppeRadarChart');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+
+      if (radarInstance) {
+        radarInstance.destroy();
+      }
+
+      radarInstance = new Chart(ctx, {
+        type: 'radar',
+        data: {
+          labels: [
+            'Relevância Social (20)',
+            'Inovação (15)',
+            'Viabilidade (10)',
+            'Equipe (10)',
+            'Escalabilidade (15)',
+            'Aderência COPPE (15)',
+            'Qualidade Pitch (15)'
+          ],
+          datasets: [
+            {
+              label: 'Nota Estimada Beauty Club',
+              data: [18.0, 13.0, 8.5, 9.5, 12.5, 13.5, 11.5],
+              backgroundColor: 'rgba(2, 132, 199, 0.25)',
+              borderColor: '#38bdf8',
+              borderWidth: 2,
+              pointBackgroundColor: '#0284c7',
+              pointBorderColor: '#fff',
+              pointRadius: 4
+            },
+            {
+              label: 'Corte Proporcional (51%)',
+              data: [10.2, 7.6, 5.1, 5.1, 7.6, 7.6, 7.6],
+              backgroundColor: 'transparent',
+              borderColor: 'rgba(255, 255, 255, 0.2)',
+              borderWidth: 1,
+              borderDash: [4, 4],
+              pointRadius: 0
+            }
+          ]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          scales: {
+            r: {
+              min: 0,
+              max: 20,
+              ticks: { display: false },
+              grid: { color: 'rgba(255, 255, 255, 0.08)' },
+              angleLines: { color: 'rgba(255, 255, 255, 0.1)' },
+              pointLabels: {
+                color: '#d6c7be',
+                font: { size: 9, family: 'Montserrat' }
+              }
+            }
+          },
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: { color: '#e7d2c6', font: { size: 10 } }
+            }
+          }
+        }
+      });
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      renderRadarChart();
+      calcBreakEven();
+    });
+  </script>
+</body>
+</html>
