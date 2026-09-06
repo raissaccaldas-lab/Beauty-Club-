@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cabo de Guerra - Pesquisa Estética</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @keyframes spin-once {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+    .animate-spin-custom {
+      animation: spin-once 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+  </style>
+</head>
+<body class="h-screen w-screen overflow-hidden bg-gradient-to-br from-slate-950 via-rose-950 to-slate-900 text-slate-100 flex flex-col justify-between p-4 md:p-6 select-none font-sans relative">
+
+  <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-50 w-full h-full"></canvas>
+
+  <header class="flex flex-col items-center justify-center space-y-1 relative z-10">
+    <h1 class="text-lg md:text-2xl lg:text-3xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-amber-300 uppercase text-center drop-shadow-sm">
+      PESQUISA INTERATIVA: PROPENSÃO A PROCEDIMENTOS ESTÉTICOS
+    </h1>
+    <div class="inline-flex items-center gap-2 bg-slate-800/70 backdrop-blur-md px-4 py-1 rounded-full border border-slate-700/60 shadow-inner">
+      <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Respostas Computadas:</span>
+      <span id="total-votos" class="text-sm font-black text-rose-300">0</span>
+    </div>
+  </header>
+
+  <div id="status-banner" class="hidden mx-auto max-w-2xl text-center text-xs py-2 px-4 rounded-lg font-medium shadow-md relative z-10"></div>
+
+  <main class="flex-1 flex flex-col justify-center max-w-5xl mx-auto w-full space-y-5 my-auto relative z-10">
+    
+    <div class="grid grid-cols-2 gap-4 items-center">
+      <div id="card-a" class="bg-rose-500/10 border border-rose-500/30 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center shadow-lg transition-all duration-300">
+        <span class="text-xs md:text-sm font-bold text-rose-300 tracking-wider flex items-center gap-1.5 uppercase text-center">
+          ✨ Topa Fazer Estética
+        </span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span id="percent-a" class="text-3xl md:text-5xl font-black text-rose-200">50.0%</span>
+        </div>
+        <span id="votos-a" class="text-xs text-rose-300/80 font-medium mt-1">0 respostas</span>
+      </div>
+
+      <div id="card-b" class="bg-indigo-500/10 border border-indigo-500/30 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center shadow-lg transition-all duration-300">
+        <span class="text-xs md:text-sm font-bold text-indigo-300 tracking-wider flex items-center gap-1.5 uppercase text-center">
+          🌿 Prefere Não Fazer
+        </span>
+        <div class="flex items-baseline gap-2 mt-1">
+          <span id="percent-b" class="text-3xl md:text-5xl font-black text-indigo-200">50.0%</span>
+        </div>
+        <span id="votos-b" class="text-xs text-indigo-300/80 font-medium mt-1">0 respostas</span>
+      </div>
+    </div>
+
+    <div class="relative w-full h-8 bg-slate-950/70 backdrop-blur-xl rounded-full p-1.5 border border-white/10 shadow-2xl overflow-visible flex items-center">
+      <div class="w-full h-full rounded-full flex overflow-hidden opacity-80">
+        <div id="bar-fill-a" class="bg-gradient-to-r from-rose-500 to-pink-400 transition-all duration-700 ease-out" style="width: 50%;"></div>
+        <div id="bar-fill-b" class="bg-gradient-to-r from-indigo-400 to-indigo-600 transition-all duration-700 ease-out" style="width: 50%;"></div>
+      </div>
+
+      <div id="rope-node" 
+           class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-12 w-12 rounded-full bg-slate-900 border-2 border-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.6)] flex items-center justify-center text-lg font-black transition-all duration-700 ease-out z-20" 
+           style="left: 50%;">
+        💉
+      </div>
+    </div>
+
+    <div class="grid grid-cols-2 gap-4 text-xs">
+      <div class="bg-slate-900/50 backdrop-blur-md border border-white/5 rounded-xl p-3 flex flex-col h-36">
+        <h2 class="font-bold text-rose-300/90 mb-2 border-b border-rose-500/20 pb-1 flex items-center justify-between">
+          <span>Últimas: Pro-Estética</span>
+          <span class="text-[10px] text-slate-400 font-normal">Máx 5</span>
+        </h2>
+        <ul id="list-a" class="space-y-1.5 overflow-hidden flex-1">
+          <li class="text-slate-500 italic text-center py-2">Aguardando dados...</li>
+        </ul>
+      </div>
+
+      <div class="bg-slate-900/50 backdrop-blur-md border border-white/5 rounded-xl p-3 flex flex-col h-36">
+        <h2 class="font-bold text-indigo-300/90 mb-2 border-b border-indigo-500/20 pb-1 flex items-center justify-between">
+          <span>Últimas: Não Quer Fazer</span>
+          <span class="text-[10px] text-slate-400 font-normal">Máx 5</span>
+        </h2>
+        <ul id="list-b" class="space-y-1.5 overflow-hidden flex-1">
+          <li class="text-slate-500 italic text-center py-2">Aguardando dados...</li>
+        </ul>
+      </div>
+    </div>
+
+  </main>
+
+  <footer class="max-w-5xl mx-auto w-full flex items-center justify-between border-t border-slate-800/80 pt-3 pb-1 text-xs text-slate-400 relative z-10">
+    <div class="flex items-center gap-4">
+      <span>Última atualização: <b id="last-update" class="text-slate-200">--:--:--</b></span>
+      <span>Linhas lidas: <b id="rows-count" class="text-slate-200">0</b></span>
+    </div>
+
+    <button id="btn-refresh" onclick="carregarDados()" class="flex items-center gap-2 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white font-bold px-4 py-2 rounded-xl shadow-lg hover:shadow-rose-500/20 active:scale-95 transition-all cursor-pointer">
+      <i id="icon-refresh" data-lucide="refresh-cw" class="w-4 h-4"></i>
+      <span>Atualizar Já</span>
+    </button>
+  </footer>
+
+  <script>
+    // Link publicado da sua planilha em CSV
+    let csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDlRg4_xHfE8ZdUrL3t3z94uZnxG8dVSyd__N9APBx-Kukarn6JS46EO95q90xmkTju82C-7R_88Md/pub?gid=627605371&single=true&output=csv";
+
+    // Palavras-chave que indicam interesse (Grupo A) vs falta de interesse (Grupo B)
+    const PALAVRAS_SIM = ["sim", "faria", "propenso", "propenso(a)", "tenho interesse", "faria com certeza", "com certeza", "quero", "talvez", "provavel", "provável"];
+    const PALAVRAS_NAO = ["não", "nao", "nunca", "prefiro não", "sem interesse", "jamais", "contra", "nenhum"];
+
+    // Web Audio API
+    let audioCtx = null;
+    function initAudioContext() {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    }
+
+    function tocarFanfarraVitoria() {
+      initAudioContext();
+      if (!audioCtx) return;
+
+      const notas = [523.25, 659.25, 783.99, 1046.50];
+      const agora = audioCtx.currentTime;
+
+      notas.forEach((freq, index) => {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, agora + index * 0.12);
+
+        const startTime = agora + index * 0.12;
+        const duracao = index === notas.length - 1 ? 0.6 : 0.18;
+
+        gain.gain.setValueAtTime(0.001, startTime);
+        gain.gain.exponentialRampToValueAtTime(0.2, startTime + 0.03);
+        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duracao);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(startTime);
+        osc.stop(startTime + duracao);
+      });
+    }
+
+    // Confetes
+    const canvas = document.getElementById('confetti-canvas');
+    const ctx = canvas.getContext('2d');
+    let particulas = [];
+    let animacaoId = null;
+
+    function redimensionarCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', redimensionarCanvas);
+    redimensionarCanvas();
+
+    function dispararConfetes(ladoVencedor) {
+      const cores = ladoVencedor === 'a' 
+        ? ['#FB7185', '#F43F5E', '#FDA4AF', '#FFFFFF'] 
+        : ['#818CF8', '#6366F1', '#C7D2FE', '#38BDF8'];
+
+      particulas = [];
+      for (let i = 0; i < 120; i++) {
+        particulas.push({
+          x: ladoVencedor === 'a' ? window.innerWidth * 0.25 : window.innerWidth * 0.75,
+          y: window.innerHeight * 0.5,
+          vx: (Math.random() - 0.5) * 18,
+          vy: (Math.random() - 1.2) * 16,
+          size: Math.random() * 8 + 4,
+          color: cores[Math.floor(Math.random() * cores.length)],
+          rotation: Math.random() * 360,
+          rotationSpeed: (Math.random() - 0.5) * 10,
+          life: 1,
+          decay: Math.random() * 0.008 + 0.008
+        });
+      }
+
+      if (animacaoId) cancelAnimationFrame(animacaoId);
+      animarConfetes();
+    }
+
+    function animarConfetes() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      particulas.forEach((p, index) => {
+        p.x += p.vx;
+        p.y += p.vy;
+        p.vy += 0.35;
+        p.vx *= 0.98;
+        p.rotation += p.rotationSpeed;
+        p.life -= p.decay;
+
+        if (p.life > 0) {
+          ctx.save();
+          ctx.translate(p.x, p.y);
+          ctx.rotate((p.rotation * Math.PI) / 180);
+          ctx.fillStyle = p.color;
+          ctx.globalAlpha = Math.max(0, p.life);
+          ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size * 0.6);
+          ctx.restore();
+        } else {
+          particulas.splice(index, 1);
+        }
+      });
+
+      if (particulas.length > 0) {
+        animacaoId = requestAnimationFrame(animarConfetes);
+      } else {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    }
+
+    function mostrarStatus(mensagem, tipo = 'erro') {
+      const banner = document.getElementById('status-banner');
+      banner.className = 'mx-auto max-w-2xl text-center text-xs py-2 px-4 rounded-lg font-medium shadow-md transition-all ' + 
+        (tipo === 'erro' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30');
+      banner.innerHTML = mensagem;
+      banner.classList.remove('hidden');
+    }
+
+    function esconderStatus() {
+      document.getElementById('status-banner').classList.add('hidden');
+    }
+
+    function parseCSV(text) {
+      const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
+      return lines.map(line => {
+        const row = [];
+        let insideQuote = false;
+        let entry = '';
+        for (let i = 0; i < line.length; i++) {
+          const char = line[i];
+          if (char === '"') {
+            insideQuote = !insideQuote;
+          } else if (char === ',' && !insideQuote) {
+            row.push(entry.replace(/^"|"$/g, '').trim());
+            entry = '';
+          } else {
+            entry += char;
+          }
+        }
+        row.push(entry.replace(/^"|"$/g, '').trim());
+        return row;
+      });
+    }
+
+    async function carregarDados() {
+      initAudioContext();
+
+      const icon = document.getElementById('icon-refresh');
+      icon.classList.remove('animate-spin-custom');
+      void icon.offsetWidth;
+      icon.classList.add('animate-spin-custom');
+
+      esconderStatus();
+
+      try {
+        const separator = csvUrl.includes('?') ? '&' : '?';
+        const cacheBusterUrl = `${csvUrl}${separator}t=${Date.now()}`;
+        const response = await fetch(cacheBusterUrl);
+
+        if (!response.ok) throw new Error(`Falha HTTP (Status ${response.status})`);
+
+        const rawData = await response.text();
+        const rows = parseCSV(rawData);
+
+        if (rows.length <= 1) {
+          mostrarStatus('A planilha ainda não possui respostas suficientes.', 'aviso');
+          return;
+        }
+
+        const headers = rows[0];
+        const dataRows = rows.slice(1);
+
+        processarRespostas(dataRows, headers);
+
+        document.getElementById('rows-count').textContent = dataRows.length;
+        document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
+
+      } catch (err) {
+        mostrarStatus(`Erro de leitura: ${err.message}`, 'erro');
+      }
+    }
+
+    function processarRespostas(rows, headers) {
+      // Tenta encontrar automaticamente a coluna que fala sobre estética/procedimento
+      let colunaVotoIdx = -1;
+      for (let i = 0; i < headers.length; i++) {
+        const h = headers[i].toLowerCase();
+        if (h.includes('estétic') || h.includes('procedimento') || h.includes('faria') || h.includes('você') || h.includes('propenso')) {
+          colunaVotoIdx = i;
+          break;
+        }
+      }
+      // Se não achar por palavra no cabeçalho, usa por padrão a coluna C (índice 2)
+      if (colunaVotoIdx === -1) colunaVotoIdx = 2;
+
+      let countA = 0;
+      let countB = 0;
+      const recentA = [];
+      const recentB = [];
+      const todasAsRespostas = new Set();
+
+      rows.forEach(col => {
+        const timestamp = col[0] || '--:--';
+        const nick = col[1] || 'Participante';
+        const respostaOriginal = (col[colunaVotoIdx] || '').trim();
+        const texto = respostaOriginal.toLowerCase();
+
+        if (respostaOriginal) todasAsRespostas.add(respostaOriginal);
+
+        const ehSim = PALAVRAS_SIM.some(p => texto.includes(p));
+        const ehNao = PALAVRAS_NAO.some(p => texto.includes(p));
+
+        if (ehSim && !ehNao) {
+          countA++;
+          recentA.unshift({ nick, time: formatarHorario(timestamp) });
+        } else if (ehNao) {
+          countB++;
+          recentB.unshift({ nick, time: formatarHorario(timestamp) });
+        }
+      });
+
+      const total = countA + countB;
+
+      // Se leu as linhas mas não identificou os grupos, orienta exatamente o que foi respondido
+      if (total === 0 && rows.length > 0) {
+        const listaExemplos = Array.from(todasAsRespostas).slice(0, 3).map(r => `"${r}"`).join(', ');
+        mostrarStatus(
+          `⚠️ Lemos ${rows.length} linhas na coluna <b>"${headers[colunaVotoIdx]}"</b>, mas as opções marcadas foram: ${listaExemplos}. Me envie esses termos para calibrarmos!`,
+          'aviso'
+        );
+      }
+
+      let percA = 50.0;
+      let percB = 50.0;
+
+      if (total > 0) {
+        percA = (countA / total) * 100;
+        percB = (countB / total) * 100;
+      }
+
+      document.getElementById('total-votos').textContent = total;
+      document.getElementById('percent-a').textContent = `${percA.toFixed(1)}%`;
+      document.getElementById('percent-b').textContent = `${percB.toFixed(1)}%`;
+      document.getElementById('votos-a').textContent = `${countA} ${countA === 1 ? 'resposta' : 'respostas'}`;
+      document.getElementById('votos-b').textContent = `${countB} ${countB === 1 ? 'resposta' : 'respostas'}`;
+
+      document.getElementById('rope-node').style.left = `${percA}%`;
+      document.getElementById('bar-fill-a').style.width = `${percA}%`;
+      document.getElementById('bar-fill-b').style.width = `${percB}%`;
+
+      renderLista('list-a', recentA.slice(0, 5), 'text-rose-200');
+      renderLista('list-b', recentB.slice(0, 5), 'text-indigo-200');
+
+      // Gatilho de Vitória (> 70%)
+      const cardA = document.getElementById('card-a');
+      const cardB = document.getElementById('card-b');
+      cardA.classList.remove('ring-4', 'ring-rose-400', 'scale-105');
+      cardB.classList.remove('ring-4', 'ring-indigo-400', 'scale-105');
+
+      if (total > 0) {
+        if (percA >= 70) {
+          cardA.classList.add('ring-4', 'ring-rose-400', 'scale-105');
+          dispararConfetes('a');
+          tocarFanfarraVitoria();
+        } else if (percB >= 70) {
+          cardB.classList.add('ring-4', 'ring-indigo-400', 'scale-105');
+          dispararConfetes('b');
+          tocarFanfarraVitoria();
+        }
+      }
+    }
+
+    function renderLista(elementId, items, highlightColor) {
+      const container = document.getElementById(elementId);
+      if (items.length === 0) {
+        container.innerHTML = '<li class="text-slate-500 italic text-center py-2">Nenhum voto registrado</li>';
+        return;
+      }
+
+      container.innerHTML = items.map(item => `
+        <li class="flex items-center justify-between py-0.5 border-b border-white/[0.03]">
+          <span class="font-medium ${highlightColor} truncate max-w-[140px] md:max-w-[200px]">${item.nick}</span>
+          <span class="text-[11px] text-slate-400 font-mono">${item.time}</span>
+        </li>
+      `).join('');
+    }
+
+    function formatarHorario(str) {
+      if (!str) return '';
+      const partes = str.split(' ');
+      return partes.length > 1 ? partes[1].substring(0, 5) : str.substring(0, 5);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      lucide.createIcons();
+      carregarDados();
+    });
+  </script>
+</body>
+</html>
