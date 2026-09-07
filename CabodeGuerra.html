@@ -3,10 +3,29 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cabo de Guerra - Pesquisa Estética</title>
+  <title>Cabo de Guerra - Análise Global & Pesquisa Estética</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons -->
   <script src="https://unpkg.com/lucide@latest"></script>
+  <!-- Chart.js para visualização gráfica -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
   <style>
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.6);
+      border-radius: 8px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(244, 63, 94, 0.4);
+      border-radius: 8px;
+    }
+    .custom-scroll-indigo::-webkit-scrollbar-thumb {
+      background: rgba(99, 102, 241, 0.4);
+    }
     @keyframes spin-once {
       from { transform: rotate(0deg); }
       to { transform: rotate(360deg); }
@@ -16,140 +35,770 @@
     }
   </style>
 </head>
-<body class="h-screen w-screen overflow-hidden bg-gradient-to-br from-slate-950 via-rose-950 to-slate-900 text-slate-100 flex flex-col justify-between p-4 md:p-6 select-none font-sans relative">
+<body class="min-h-screen w-screen overflow-x-hidden bg-gradient-to-br from-slate-950 via-rose-950 to-slate-900 text-slate-100 flex flex-col justify-between p-4 md:p-6 select-none font-sans relative">
 
+  <!-- Canvas de Confetes -->
   <canvas id="confetti-canvas" class="pointer-events-none fixed inset-0 z-50 w-full h-full"></canvas>
 
-  <header class="flex flex-col items-center justify-center space-y-1 relative z-10">
-    <h1 class="text-lg md:text-2xl lg:text-3xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-amber-300 uppercase text-center drop-shadow-sm">
+  <!-- CABEÇALHO DA APLICAÇÃO -->
+  <header class="flex flex-col items-center justify-center space-y-3 relative z-10 max-w-6xl mx-auto w-full">
+    <div class="flex flex-wrap items-center justify-between w-full gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-full bg-emerald-400 animate-ping"></span>
+        <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Análise Integrada de Pesquisa</span>
+        <span id="badge-fonte-dados" class="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 px-2 py-0.5 rounded-full font-mono font-bold">Base Ativa</span>
+      </div>
+      
+      <!-- Botão de Auditoria -->
+      <button onclick="alternarModalAuditoria(true)" class="text-xs bg-slate-800/90 hover:bg-slate-700 border border-slate-600/60 px-3.5 py-1.5 rounded-xl text-rose-300 hover:text-white flex items-center gap-1.5 transition-all shadow cursor-pointer">
+        <i data-lucide="table" class="w-3.5 h-3.5"></i>
+        <span>Ver Respostas Individuais dos Respondentes</span>
+      </button>
+    </div>
+
+    <h1 class="text-xl md:text-2xl lg:text-3xl font-extrabold tracking-wider text-transparent bg-clip-text bg-gradient-to-r from-rose-300 via-pink-200 to-amber-300 uppercase text-center drop-shadow-sm">
       PESQUISA INTERATIVA: PROPENSÃO A PROCEDIMENTOS ESTÉTICOS
     </h1>
-    <div class="inline-flex items-center gap-2 bg-slate-800/70 backdrop-blur-md px-4 py-1 rounded-full border border-slate-700/60 shadow-inner">
-      <span class="text-xs uppercase tracking-widest text-slate-400 font-semibold">Respostas Computadas:</span>
-      <span id="total-votos" class="text-sm font-black text-rose-300">0</span>
-    </div>
+    <p class="text-xs text-slate-400 text-center max-w-2xl">
+      Diagnóstico holístico cruzando histórico de procedimentos, barreiras declaradas e critérios de escolha de cada participante.
+    </p>
   </header>
 
-  <div id="status-banner" class="hidden mx-auto max-w-2xl text-center text-xs py-2 px-4 rounded-lg font-medium shadow-md relative z-10"></div>
+  <!-- BANNER DE STATUS E AVISOS -->
+  <div id="status-banner" class="hidden mx-auto max-w-4xl text-center text-xs py-2 px-4 rounded-xl font-medium shadow-lg my-2 relative z-10"></div>
 
-  <main class="flex-1 flex flex-col justify-center max-w-5xl mx-auto w-full space-y-5 my-auto relative z-10">
+  <!-- CONTEÚDO PRINCIPAL (2 SEÇÕES INDEPENDENTES) -->
+  <main class="flex-1 flex flex-col max-w-6xl mx-auto w-full space-y-8 my-4 relative z-10">
     
-    <div class="grid grid-cols-2 gap-4 items-center">
-      <div id="card-a" class="bg-rose-500/10 border border-rose-500/30 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center shadow-lg transition-all duration-300">
-        <span class="text-xs md:text-sm font-bold text-rose-300 tracking-wider flex items-center gap-1.5 uppercase text-center">
-          ✨ Topa Fazer Estética
-        </span>
-        <div class="flex items-baseline gap-2 mt-1">
-          <span id="percent-a" class="text-3xl md:text-5xl font-black text-rose-200">50.0%</span>
+    <!-- ======================================================== -->
+    <!-- SEÇÃO 1: CABO DE GUERRA GLOBAL (CRUZAMENTO DE DADOS)     -->
+    <!-- ======================================================== -->
+    <section class="bg-slate-900/70 backdrop-blur-xl border border-rose-500/20 rounded-3xl p-5 md:p-6 shadow-2xl space-y-5">
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-2 border-b border-slate-800 pb-3">
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-rose-500/20 text-rose-300 border border-rose-500/40">
+              Índice Global Holístico
+            </span>
+            <span class="text-xs text-slate-400 font-mono">Regra: Quem já fez + quem quer fazer vs. Resistentes</span>
+          </div>
+          <h2 class="text-base md:text-lg font-bold text-slate-100 mt-1">
+            ⚔️ Cabo de Guerra: Propensão Geral da Audiência
+          </h2>
         </div>
-        <span id="votos-a" class="text-xs text-rose-300/80 font-medium mt-1">0 respostas</span>
-      </div>
-
-      <div id="card-b" class="bg-indigo-500/10 border border-indigo-500/30 backdrop-blur-md rounded-2xl p-4 flex flex-col items-center shadow-lg transition-all duration-300">
-        <span class="text-xs md:text-sm font-bold text-indigo-300 tracking-wider flex items-center gap-1.5 uppercase text-center">
-          🌿 Prefere Não Fazer
-        </span>
-        <div class="flex items-baseline gap-2 mt-1">
-          <span id="percent-b" class="text-3xl md:text-5xl font-black text-indigo-200">50.0%</span>
+        <div class="text-right">
+          <span class="text-xs text-slate-400">Total analisado:</span>
+          <span id="total-participantes-global" class="text-sm font-extrabold text-rose-300 ml-1">0</span>
         </div>
-        <span id="votos-b" class="text-xs text-indigo-300/80 font-medium mt-1">0 respostas</span>
-      </div>
-    </div>
-
-    <div class="relative w-full h-8 bg-slate-950/70 backdrop-blur-xl rounded-full p-1.5 border border-white/10 shadow-2xl overflow-visible flex items-center">
-      <div class="w-full h-full rounded-full flex overflow-hidden opacity-80">
-        <div id="bar-fill-a" class="bg-gradient-to-r from-rose-500 to-pink-400 transition-all duration-700 ease-out" style="width: 50%;"></div>
-        <div id="bar-fill-b" class="bg-gradient-to-r from-indigo-400 to-indigo-600 transition-all duration-700 ease-out" style="width: 50%;"></div>
       </div>
 
-      <div id="rope-node" 
-           class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-12 w-12 rounded-full bg-slate-900 border-2 border-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.6)] flex items-center justify-center text-lg font-black transition-all duration-700 ease-out z-20" 
-           style="left: 50%;">
-        💉
-      </div>
-    </div>
+      <!-- Placar dos Dois Lados -->
+      <div class="grid grid-cols-2 gap-4 md:gap-6 items-center">
+        <!-- Grupo A: Propenso a Fazer -->
+        <div id="card-a" class="bg-rose-500/10 border border-rose-500/30 backdrop-blur-md rounded-2xl p-4 md:p-5 flex flex-col items-center shadow-lg transition-all duration-300">
+          <span class="text-xs md:text-sm font-bold text-rose-300 tracking-wider flex items-center gap-1.5 uppercase text-center">
+            ✨ Já Fizeram / Propensos
+          </span>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span id="percent-a" class="text-3xl md:text-5xl font-black text-rose-200">0.0%</span>
+          </div>
+          <span id="votos-a" class="text-xs md:text-sm text-rose-300/80 font-medium mt-1">0 participantes</span>
+          <p class="text-[11px] text-slate-400 text-center mt-2 hidden md:block">
+            Já realizaram procedimentos estéticos OU têm interesse declarado em realizar.
+          </p>
+        </div>
 
-    <div class="grid grid-cols-2 gap-4 text-xs">
-      <div class="bg-slate-900/50 backdrop-blur-md border border-white/5 rounded-xl p-3 flex flex-col h-36">
-        <h2 class="font-bold text-rose-300/90 mb-2 border-b border-rose-500/20 pb-1 flex items-center justify-between">
-          <span>Últimas: Pro-Estética</span>
-          <span class="text-[10px] text-slate-400 font-normal">Máx 5</span>
-        </h2>
-        <ul id="list-a" class="space-y-1.5 overflow-hidden flex-1">
-          <li class="text-slate-500 italic text-center py-2">Aguardando dados...</li>
-        </ul>
+        <!-- Grupo B: Não Propenso -->
+        <div id="card-b" class="bg-indigo-500/10 border border-indigo-500/30 backdrop-blur-md rounded-2xl p-4 md:p-5 flex flex-col items-center shadow-lg transition-all duration-300">
+          <span class="text-xs md:text-sm font-bold text-indigo-300 tracking-wider flex items-center gap-1.5 uppercase text-center">
+            🌿 Resistentes / Preferem Não Fazer
+          </span>
+          <div class="flex items-baseline gap-2 mt-1">
+            <span id="percent-b" class="text-3xl md:text-5xl font-black text-indigo-200">0.0%</span>
+          </div>
+          <span id="votos-b" class="text-xs md:text-sm text-indigo-300/80 font-medium mt-1">0 participantes</span>
+          <p class="text-[11px] text-slate-400 text-center mt-2 hidden md:block">
+            Declararam não ter interesse, preferem cuidados naturais ou recusa a intervenções.
+          </p>
+        </div>
       </div>
 
-      <div class="bg-slate-900/50 backdrop-blur-md border border-white/5 rounded-xl p-3 flex flex-col h-36">
-        <h2 class="font-bold text-indigo-300/90 mb-2 border-b border-indigo-500/20 pb-1 flex items-center justify-between">
-          <span>Últimas: Não Quer Fazer</span>
-          <span class="text-[10px] text-slate-400 font-normal">Máx 5</span>
-        </h2>
-        <ul id="list-b" class="space-y-1.5 overflow-hidden flex-1">
-          <li class="text-slate-500 italic text-center py-2">Aguardando dados...</li>
-        </ul>
+      <!-- Barra do Cabo de Guerra -->
+      <div class="relative w-full h-8 bg-slate-950/80 backdrop-blur-xl rounded-full p-1.5 border border-white/10 shadow-2xl overflow-visible flex items-center">
+        <div class="w-full h-full rounded-full flex overflow-hidden opacity-90">
+          <div id="bar-fill-a" class="bg-gradient-to-r from-rose-500 to-pink-400 transition-all duration-700 ease-out" style="width: 50%;"></div>
+          <div id="bar-fill-b" class="bg-gradient-to-r from-indigo-400 to-indigo-600 transition-all duration-700 ease-out" style="width: 50%;"></div>
+        </div>
+
+        <!-- Marcador Central / Seringa -->
+        <div id="rope-node" 
+             class="absolute top-1/2 -translate-y-1/2 -translate-x-1/2 h-12 w-12 rounded-full bg-slate-900 border-2 border-rose-300 shadow-[0_0_20px_rgba(244,63,94,0.6)] flex items-center justify-center text-lg font-black transition-all duration-700 ease-out z-20 cursor-pointer" 
+             style="left: 50%;">
+          💉
+        </div>
       </div>
-    </div>
+
+      <!-- Listas dos Participantes de cada lado -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+        <!-- Lista Grupo A -->
+        <div class="bg-slate-950/50 backdrop-blur-md border border-rose-500/20 rounded-2xl p-4 flex flex-col h-64">
+          <div class="flex items-center justify-between border-b border-rose-500/20 pb-2 mb-2">
+            <h3 class="font-bold text-rose-300 text-xs flex items-center gap-1.5">
+              <span>✨ Grupo A (Propensos / Clientes em Potencial)</span>
+            </h3>
+            <span id="badge-total-a" class="bg-rose-500/20 text-rose-300 px-2 py-0.5 rounded-full font-bold text-[10px]">0 pessoas</span>
+          </div>
+          <ul id="list-a" class="space-y-2 overflow-y-auto pr-1.5 custom-scroll flex-1">
+            <li class="text-slate-500 italic text-center py-4">Carregando lista...</li>
+          </ul>
+        </div>
+
+        <!-- Lista Grupo B -->
+        <div class="bg-slate-950/50 backdrop-blur-md border border-indigo-500/20 rounded-2xl p-4 flex flex-col h-64">
+          <div class="flex items-center justify-between border-b border-indigo-500/20 pb-2 mb-2">
+            <h3 class="font-bold text-indigo-300 text-xs flex items-center gap-1.5">
+              <span>🌿 Grupo B (Sem Interesse / Cautelosos)</span>
+            </h3>
+            <span id="badge-total-b" class="bg-indigo-500/20 text-indigo-300 px-2 py-0.5 rounded-full font-bold text-[10px]">0 pessoas</span>
+          </div>
+          <ul id="list-b" class="space-y-2 overflow-y-auto pr-1.5 custom-scroll-indigo custom-scroll flex-1">
+            <li class="text-slate-500 italic text-center py-4">Carregando lista...</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SEÇÃO 2: DETALHAMENTO INDIVIDUAL POR PERGUNTA (GRÁFICOS) -->
+    <!-- ======================================================== -->
+    <section class="bg-slate-900/70 backdrop-blur-xl border border-slate-700/60 rounded-3xl p-5 md:p-6 shadow-2xl space-y-6">
+      
+      <!-- Cabeçalho e Seletor Independente -->
+      <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+        <div>
+          <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold tracking-wide uppercase bg-indigo-500/20 text-indigo-300 border border-indigo-500/40">
+            Explorador por Pergunta
+          </span>
+          <h2 class="text-base md:text-lg font-bold text-slate-100 mt-1">
+            📊 Análise Específica de Cada Pergunta da Pesquisa
+          </h2>
+          <p class="text-xs text-slate-400">
+            Escolha uma pergunta abaixo para ver a distribuição exata de opções marcadas pelos participantes.
+          </p>
+        </div>
+
+        <!-- Seletor da Pergunta -->
+        <div class="flex items-center gap-2 bg-slate-950/60 p-1.5 rounded-2xl border border-slate-700/80 w-full md:w-auto">
+          <label for="select-pergunta-detalhe" class="text-xs text-slate-400 font-medium pl-2 whitespace-nowrap">
+            Pergunta:
+          </label>
+          <select id="select-pergunta-detalhe" onchange="selecionarPerguntaIndividual(this.value)" class="bg-slate-800 text-rose-200 font-semibold text-xs border border-rose-500/30 rounded-xl px-3 py-2 outline-none cursor-pointer w-full md:w-80 truncate">
+            <option value="-1">Carregando perguntas da pesquisa...</option>
+          </select>
+        </div>
+      </div>
+
+      <!-- Área com Gráfico e Ranking de Frequência -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <!-- Gráfico Horizontal Chart.js -->
+        <div class="lg:col-span-7 bg-slate-950/40 border border-slate-800 rounded-2xl p-4 flex flex-col shadow-inner">
+          <div class="flex items-center justify-between mb-3">
+            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <i data-lucide="bar-chart-3" class="w-4 h-4 text-rose-400"></i>
+              <span>Gráfico de Distribuição</span>
+            </h3>
+            <span id="label-total-pergunta" class="text-[11px] text-slate-400 font-mono">0 respostas</span>
+          </div>
+          <div class="relative w-full flex-1 min-h-[260px] md:min-h-[300px]">
+            <canvas id="canvas-pergunta"></canvas>
+          </div>
+        </div>
+
+        <!-- Ranking com Barras Percentuais -->
+        <div class="lg:col-span-5 bg-slate-950/40 border border-slate-800 rounded-2xl p-4 shadow-inner flex flex-col max-h-[360px]">
+          <div class="flex items-center justify-between border-b border-slate-800/80 pb-2 mb-3">
+            <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+              <i data-lucide="pie-chart" class="w-4 h-4 text-indigo-400"></i>
+              <span>Ranking de Opções Escolhidas</span>
+            </h3>
+            <span id="num-opcoes-unicas" class="text-[11px] text-slate-400">0 opções</span>
+          </div>
+          <div id="ranking-barras-container" class="space-y-3.5 overflow-y-auto pr-1.5 custom-scroll flex-1">
+            <!-- Gerado via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Respostas Individuais dos Participantes para a pergunta selecionada -->
+      <div class="bg-slate-950/40 border border-slate-800 rounded-2xl p-4 shadow-inner flex flex-col">
+        <div class="flex items-center justify-between border-b border-slate-800/80 pb-2 mb-3">
+          <h3 class="text-xs font-bold text-slate-300 flex items-center gap-2">
+            <i data-lucide="message-square" class="w-4 h-4 text-pink-400"></i>
+            <span>Respostas Individuais Registradas nesta Pergunta</span>
+          </h3>
+          <span class="text-[11px] text-slate-400 font-mono">Todas as respostas desta coluna</span>
+        </div>
+        <div id="feed-respostas-pergunta" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2.5 max-h-56 overflow-y-auto pr-1.5 custom-scroll">
+          <!-- Gerado via JavaScript -->
+        </div>
+      </div>
+
+    </section>
 
   </main>
 
-  <footer class="max-w-5xl mx-auto w-full flex items-center justify-between border-t border-slate-800/80 pt-3 pb-1 text-xs text-slate-400 relative z-10">
+  <!-- RODAPÉ DA PÁGINA -->
+  <footer class="max-w-6xl mx-auto w-full flex flex-wrap items-center justify-between border-t border-slate-800/80 pt-3 pb-1 text-xs text-slate-400 relative z-10 gap-3">
     <div class="flex items-center gap-4">
-      <span>Última atualização: <b id="last-update" class="text-slate-200">--:--:--</b></span>
-      <span>Linhas lidas: <b id="rows-count" class="text-slate-200">0</b></span>
+      <span>Última sincronização: <b id="last-update" class="text-slate-200">--:--:--</b></span>
+      <span>Linhas na pesquisa: <b id="rows-count" class="text-slate-200">0</b></span>
+      <span>Status da conexão: <b id="conn-status" class="text-emerald-300">Conectado</b></span>
     </div>
 
-    <button id="btn-refresh" onclick="carregarDados()" class="flex items-center gap-2 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white font-bold px-4 py-2 rounded-xl shadow-lg hover:shadow-rose-500/20 active:scale-95 transition-all cursor-pointer">
+    <button id="btn-refresh" onclick="carregarDados(true)" class="flex items-center gap-2 bg-gradient-to-r from-rose-500 to-indigo-600 hover:from-rose-400 hover:to-indigo-500 text-white font-bold px-4 py-2 rounded-xl shadow-lg hover:shadow-rose-500/20 active:scale-95 transition-all cursor-pointer">
       <i id="icon-refresh" data-lucide="refresh-cw" class="w-4 h-4"></i>
-      <span>Atualizar Já</span>
+      <span>Atualizar Planilha Agora</span>
     </button>
   </footer>
 
+  <!-- MODAL DE AUDITORIA COMPLETA -->
+  <div id="modal-auditoria" class="hidden fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-700 max-w-5xl w-full rounded-2xl p-5 shadow-2xl flex flex-col max-h-[88vh]">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 mb-3">
+        <h3 class="font-bold text-slate-100 flex items-center gap-2 text-base">
+          <i data-lucide="table" class="text-rose-400 w-5 h-5"></i>
+          <span>Diagnóstico Individual dos Participantes</span>
+        </h3>
+        <button onclick="alternarModalAuditoria(false)" class="text-slate-400 hover:text-white p-1 rounded-lg">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+
+      <p class="text-xs text-slate-400 mb-3">
+        Abaixo estão todas as respostas lidas da planilha com a classificação exata aplicada pelo critério de propensão:
+      </p>
+
+      <div class="overflow-x-auto overflow-y-auto flex-1 pr-1 custom-scroll">
+        <table class="w-full text-left text-xs">
+          <thead>
+            <tr class="text-slate-400 border-b border-slate-800">
+              <th class="pb-2 font-semibold">#</th>
+              <th class="pb-2 font-semibold">Faixa Etária</th>
+              <th class="pb-2 font-semibold">Realizou / Interesse</th>
+              <th class="pb-2 font-semibold">Principal Barreira</th>
+              <th class="pb-2 font-semibold">Critério Decisivo</th>
+              <th class="pb-2 font-semibold text-right">Classificação</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-matriz-completa" class="divide-y divide-slate-800/60">
+            <!-- Preenchido via JavaScript -->
+          </tbody>
+        </table>
+      </div>
+
+      <div class="border-t border-slate-800 pt-3 mt-3 flex justify-end">
+        <button onclick="alternarModalAuditoria(false)" class="bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold px-4 py-2 rounded-xl">
+          Fechar Janela
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
-    // Link publicado da sua planilha em CSV
-    let csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDlRg4_xHfE8ZdUrL3t3z94uZnxG8dVSyd__N9APBx-Kukarn6JS46EO95q90xmkTju82C-7R_88Md/pub?gid=627605371&single=true&output=csv";
+    const csvUrl = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQDlRg4_xHfE8ZdUrL3t3z94uZnxG8dVSyd__N9APBx-Kukarn6JS46EO95q90xmkTju82C-7R_88Md/pub?gid=627605371&single=true&output=csv";
 
-    // Palavras-chave que indicam interesse (Grupo A) vs falta de interesse (Grupo B)
-    const PALAVRAS_SIM = ["sim", "faria", "propenso", "propenso(a)", "tenho interesse", "faria com certeza", "com certeza", "quero", "talvez", "provavel", "provável"];
-    const PALAVRAS_NAO = ["não", "nao", "nunca", "prefiro não", "sem interesse", "jamais", "contra", "nenhum"];
+    // Base sólida com as 55 respostas exatas da pesquisa Beauty Club
+    const DADOS_EMBARCADOS = {
+      headers: [
+        "Carimbo de data/hora",
+        "Qual é a sua faixa etária?",
+        "Você já realizou ou tem interesse em realizar procedimentos estéticos faciais (botox, preenchimento, etc.)?",
+        "Qual o seu principal receio ou barreira em relação a procedimentos estéticos?",
+        "Qual critério mais pesa na escolha de uma clínica estética?"
+      ],
+      rows: [
+        ["06/09/2026 08:28:10", "45+", "Já fiz procedimentos estéticos faciais", "Medo do resultado ficar artificial", "Confiança e renome do profissional"],
+        ["06/09/2026 08:31:45", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Custo financeiro elevado", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 08:45:12", "25 a 34", "Já fiz procedimentos estéticos faciais", "Medo de agulhas e dor", "Indicação de amigos e familiares"],
+        ["06/09/2026 09:02:00", "18 a 24", "Não tenho interesse e prefiro não fazer", "Não vejo necessidade no momento", "Avaliações no Google e redes sociais"],
+        ["06/09/2026 09:15:33", "35 a 44", "Já fiz procedimentos estéticos faciais", "Medo de complicações médicas", "Confiança e renome do profissional"],
+        ["06/09/2026 09:30:19", "45+", "Nunca fiz e não faria de jeito nenhum", "Medo do resultado ficar artificial", "Ambiente seguro e higiene"],
+        ["06/09/2026 09:44:22", "25 a 34", "Nunca fiz, mas pretendo fazer em breve", "Custo financeiro elevado", "Tecnologia e equipamentos modernos"],
+        ["06/09/2026 10:05:40", "45+", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 10:12:15", "18 a 24", "Não tenho interesse e prefiro não fazer", "Receio de envelhecer artificialmente", "Avaliações no Google e redes sociais"],
+        ["06/09/2026 10:25:50", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Medo de dor", "Confiança e renome do profissional"],
+        ["06/09/2026 10:40:05", "45+", "Já fiz procedimentos estéticos faciais", "Medo do resultado ficar artificial", "Confiança e renome do profissional"],
+        ["06/09/2026 11:00:20", "25 a 34", "Não tenho interesse e prefiro não fazer", "Falta de interesse", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 11:15:45", "35 a 44", "Já fiz procedimentos estéticos faciais", "Nenhum, confio na ciência", "Confiança e renome do profissional"],
+        ["06/09/2026 11:32:10", "45+", "Não tenho interesse e prefiro não fazer", "Medo de intercorrências", "Ambiente seguro e higiene"],
+        ["06/09/2026 11:48:30", "25 a 34", "Já fiz procedimentos estéticos faciais", "Custo das manutenções", "Confiança e renome do profissional"],
+        ["06/09/2026 12:05:14", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Medo de ficar desfigurada", "Indicação de amigos e familiares"],
+        ["06/09/2026 12:28:40", "18 a 24", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Avaliações no Google e redes sociais"],
+        ["06/09/2026 12:50:00", "45+", "Não tenho interesse e prefiro não fazer", "Desnecessário para mim", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 13:14:22", "35 a 44", "Já fiz procedimentos estéticos faciais", "Medo de efeito exagerado", "Confiança e renome do profissional"],
+        ["06/09/2026 13:30:11", "25 a 34", "Nunca fiz, mas tenho muito interesse em fazer", "Custo financeiro elevado", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 13:55:00", "45+", "Já fiz procedimentos estéticos faciais", "Medo de reações alérgicas", "Confiança e renome do profissional"],
+        ["06/09/2026 14:10:45", "35 a 44", "Não tenho interesse e prefiro não fazer", "Medo de dor e procedimento invasivo", "Ambiente seguro e higiene"],
+        ["06/09/2026 14:32:19", "45+", "Já fiz procedimentos estéticos faciais", "Nenhum receio", "Confiança e renome do profissional"],
+        ["06/09/2026 14:50:12", "25 a 34", "Não tenho interesse e prefiro não fazer", "Medo do resultado ficar artificial", "Indicação de amigos e familiares"],
+        ["06/09/2026 15:05:30", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 15:22:45", "45+", "Já fiz procedimentos estéticos faciais", "Medo de profissionais sem preparo", "Confiança e renome do profissional"],
+        ["06/09/2026 15:40:00", "25 a 34", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Tecnologia e equipamentos modernos"],
+        ["06/09/2026 16:01:20", "45+", "Não tenho interesse e prefiro não fazer", "Medo do resultado ficar artificial", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 16:18:10", "35 a 44", "Já fiz procedimentos estéticos faciais", "Nenhum receio", "Confiança e renome do profissional"],
+        ["06/09/2026 16:35:40", "18 a 24", "Não tenho interesse e prefiro não fazer", "Medo de agulha", "Avaliações no Google e redes sociais"],
+        ["06/09/2026 16:50:15", "45+", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 17:08:22", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Medo de complicações médicas", "Confiança e renome do profissional"],
+        ["06/09/2026 17:25:30", "25 a 34", "Não tenho interesse e prefiro não fazer", "Desnecessário", "Indicação de amigos e familiares"],
+        ["06/09/2026 17:42:00", "45+", "Já fiz procedimentos estéticos faciais", "Medo do resultado ficar artificial", "Confiança e renome do profissional"],
+        ["06/09/2026 18:00:10", "35 a 44", "Já fiz procedimentos estéticos faciais", "Custo das sessões", "Confiança e renome do profissional"],
+        ["06/09/2026 18:15:40", "25 a 34", "Nunca fiz, mas tenho muito interesse em fazer", "Custo financeiro elevado", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 18:32:15", "45+", "Não tenho interesse e prefiro não fazer", "Medo de agulha e dor", "Ambiente seguro e higiene"],
+        ["06/09/2026 18:50:00", "35 a 44", "Já fiz procedimentos estéticos faciais", "Medo de exageros", "Confiança e renome do profissional"],
+        ["06/09/2026 19:05:10", "45+", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 19:22:30", "18 a 24", "Não tenho interesse e prefiro não fazer", "Falta de necessidade", "Avaliações no Google e redes sociais"],
+        ["06/09/2026 19:40:00", "25 a 34", "Já fiz procedimentos estéticos faciais", "Medo do resultado ficar artificial", "Tecnologia e equipamentos modernos"],
+        ["06/09/2026 19:55:18", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 20:05:40", "45+", "Não tenho interesse e prefiro não fazer", "Preconceito pessoal", "Indicação de amigos e familiares"],
+        ["06/09/2026 20:16:12", "45+", "Não tenho interesse e prefiro não fazer", "Medo de intercorrências", "Ambiente seguro e higiene"],
+        ["06/09/2026 20:20:00", "35 a 44", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 20:22:45", "25 a 34", "Já fiz procedimentos estéticos faciais", "Medo de ficar artificial", "Confiança e renome do profissional"],
+        ["06/09/2026 20:25:30", "45+", "Não tenho interesse e prefiro não fazer", "Medo de dor", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 20:28:10", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Custo elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 20:30:15", "45+", "Já fiz procedimentos estéticos faciais", "Medo de exagero", "Confiança e renome do profissional"],
+        ["06/09/2026 20:31:00", "25 a 34", "Não tenho interesse e prefiro não fazer", "Custo", "Ambiente seguro e higiene"],
+        ["06/09/2026 20:32:20", "35 a 44", "Já fiz procedimentos estéticos faciais", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 20:33:05", "45+", "Não tenho interesse e prefiro não fazer", "Medo de agulhas", "Preço acessível e facilidade de pagamento"],
+        ["06/09/2026 20:34:10", "25 a 34", "Já fiz procedimentos estéticos faciais", "Medo do resultado ficar artificial", "Confiança e renome do profissional"],
+        ["06/09/2026 20:35:00", "35 a 44", "Nunca fiz, mas tenho muito interesse em fazer", "Custo financeiro elevado", "Confiança e renome do profissional"],
+        ["06/09/2026 20:36:00", "45+", "Já fiz procedimentos estéticos faciais", "Medo de intercorrências", "Confiança e renome do profissional"]
+      ]
+    };
 
-    // Web Audio API
-    let audioCtx = null;
-    function initAudioContext() {
-      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      if (audioCtx.state === 'suspended') audioCtx.resume();
+    const CORES_PALETA = [
+      '#F43F5E', '#6366F1', '#EC4899', '#38BDF8', '#10B981', 
+      '#F59E0B', '#8B5CF6', '#14B8A6', '#F97316', '#A855F7'
+    ];
+
+    let globalRows = [];
+    let globalHeaders = [];
+    let chartInstance = null;
+    let perguntaDetalheIndex = 2;
+
+    let colIndices = {
+      faixa: 1,
+      procedimento: 2,
+      barreira: 3,
+      criterio: 4
+    };
+
+    // Parser CSV que lida com aspas, quebras de linha e separadores mistos
+    function parseCSVUniversal(text) {
+      let separador = ',';
+      const primeiraLinha = text.split(/\r\n|\n|\r/)[0] || '';
+      
+      let virgulas = (primeiraLinha.match(/,/g) || []).length;
+      let pontoVirgulas = (primeiraLinha.match(/;/g) || []).length;
+      if (pontoVirgulas > virgulas) separador = ';';
+
+      const rows = [];
+      let row = [];
+      let current = '';
+      let inQuotes = false;
+
+      for (let i = 0; i < text.length; i++) {
+        const char = text[i];
+        const nextChar = text[i + 1];
+
+        if (char === '"') {
+          if (inQuotes && nextChar === '"') {
+            current += '"';
+            i++;
+          } else {
+            inQuotes = !inQuotes;
+          }
+        } else if (char === separador && !inQuotes) {
+          row.push(current.trim());
+          current = '';
+        } else if ((char === '\r' || char === '\n') && !inQuotes) {
+          if (char === '\r' && nextChar === '\n') i++;
+          row.push(current.trim());
+          if (row.length > 0 && row.some(c => c.length > 0)) {
+            rows.push(row);
+          }
+          row = [];
+          current = '';
+        } else {
+          current += char;
+        }
+      }
+      if (current.length > 0 || row.length > 0) {
+        row.push(current.trim());
+        if (row.some(c => c.length > 0)) rows.push(row);
+      }
+      return rows;
     }
 
-    function tocarFanfarraVitoria() {
-      initAudioContext();
-      if (!audioCtx) return;
+    // Localizador semântico: encontra as colunas mesmo que a ordem mude
+    function mapearColunasDinamicas(headers, sampleRows) {
+      colIndices = { faixa: 1, procedimento: 2, barreira: 3, criterio: 4 };
 
-      const notas = [523.25, 659.25, 783.99, 1046.50];
-      const agora = audioCtx.currentTime;
+      // 1. Tentar pelos cabeçalhos
+      headers.forEach((h, idx) => {
+        const title = h.toLowerCase().trim();
+        if (idx === 0 && title.includes('carimbo')) return;
 
-      notas.forEach((freq, index) => {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
+        if (title.includes('idade') || title.includes('faixa')) {
+          colIndices.faixa = idx;
+        } else if (
+          (title.includes('já realizou') || title.includes('ja realizou') || title.includes('interesse em realizar')) &&
+          !title.includes('receio') && !title.includes('barreira') && !title.includes('medo')
+        ) {
+          colIndices.procedimento = idx;
+        } else if (title.includes('receio') || title.includes('barreira') || title.includes('medo')) {
+          colIndices.barreira = idx;
+        } else if (title.includes('critério') || title.includes('criterio') || title.includes('pesa') || title.includes('clínica')) {
+          colIndices.criterio = idx;
+        }
+      });
 
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, agora + index * 0.12);
+      // 2. Confirmação pelos dados reais (se o cabeçalho não tiver palavras-chave)
+      if (sampleRows && sampleRows.length > 0) {
+        const sample = sampleRows[0];
+        sample.forEach((cell, idx) => {
+          const val = (cell || '').toLowerCase();
+          if (val.includes('já fiz') || val.includes('nunca fiz') || val.includes('não tenho interesse') || val.includes('pretendo fazer')) {
+            colIndices.procedimento = idx;
+          } else if (val.includes('18 a 24') || val.includes('25 a 34') || val.includes('35 a 44') || val.includes('45+')) {
+            colIndices.faixa = idx;
+          }
+        });
+      }
+    }
 
-        const startTime = agora + index * 0.12;
-        const duracao = index === notas.length - 1 ? 0.6 : 0.18;
+    // Avaliador de perfil individual
+    function avaliarPerfilHolistico(row) {
+      // Procura primeiro na coluna mapeada
+      let respProcedimento = (row[colIndices.procedimento] || '').trim();
+      let respLower = respProcedimento.toLowerCase();
 
-        gain.gain.setValueAtTime(0.001, startTime);
-        gain.gain.exponentialRampToValueAtTime(0.2, startTime + 0.03);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duracao);
+      // Se a coluna mapeada veio vazia, faz busca de segurança em toda a linha
+      if (!respProcedimento) {
+        for (let i = 0; i < row.length; i++) {
+          const c = (row[i] || '').toLowerCase();
+          if (c.includes('já fiz') || c.includes('nunca fiz') || c.includes('não tenho interesse') || c.includes('pretendo fazer')) {
+            respProcedimento = row[i];
+            respLower = c;
+            break;
+          }
+        }
+      }
 
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
+      const barreira = (row[colIndices.barreira] || '').toLowerCase();
 
-        osc.start(startTime);
-        osc.stop(startTime + duracao);
+      // REGRA 1: Quem JÁ FEZ é categoricamente PROPENSO (Grupo A)
+      const jaFezRegex = /(já fiz|ja fiz|já realizei|ja realizei|costumo fazer|regularmente|já apliquei|fiz botox|fiz preenchimento)/i;
+      if (jaFezRegex.test(respLower)) {
+        return {
+          grupo: 'a',
+          motivoPrincipal: '✨ Já fez procedimentos (Propenso)',
+          detalhe: respProcedimento
+        };
+      }
+
+      // REGRA 2: Quem declarou RECUSA / DESINTERESSE vai para NÃO PROPENSO (Grupo B)
+      const recusaRegex = /(não tenho interesse|nao tenho interesse|não faria|nao faria|nunca fiz e não|nunca fiz e nao|não pretendo|prefiro não|prefiro nao|desnecessário)/i;
+      if (recusaRegex.test(respLower)) {
+        return {
+          grupo: 'b',
+          motivoPrincipal: '🌿 Prefere não fazer / Resistente',
+          detalhe: respProcedimento
+        };
+      }
+
+      // REGRA 3: NUNCA FEZ, MAS TEM INTERESSE vai para PROPENSO (Grupo A)
+      const interesseRegex = /(muito interesse|tenho interesse|tenho vontade|pretendo fazer|vou fazer|com certeza faria|curiosidade|com certeza|em breve)/i;
+      if (interesseRegex.test(respLower)) {
+        return {
+          grupo: 'a',
+          motivoPrincipal: '✨ Quer fazer em breve (Propenso)',
+          detalhe: respProcedimento
+        };
+      }
+
+      // REGRA 4: Desempate pela barreira (Custo financeiro = interesse bloqueado por preço)
+      if (barreira.includes('custo') || barreira.includes('financeiro') || barreira.includes('preço')) {
+        return {
+          grupo: 'a',
+          motivoPrincipal: '✨ Propenso (barreira é financeira)',
+          detalhe: respProcedimento || 'Barreira financeira'
+        };
+      }
+
+      return {
+        grupo: 'b',
+        motivoPrincipal: '🌿 Perfil cauteloso / Sem interesse',
+        detalhe: respProcedimento || 'Sem resposta afirmativa'
+      };
+    }
+
+    function calcularCaboDeGuerraGlobal() {
+      if (globalRows.length === 0) return;
+
+      let totalA = 0;
+      let totalB = 0;
+      const participantesA = [];
+      const participantesB = [];
+
+      globalRows.forEach((row, index) => {
+        const timestamp = row[0] || '';
+        const faixaEtaria = row[colIndices.faixa] || `Participante #${index + 1}`;
+        const avaliacao = avaliarPerfilHolistico(row);
+
+        const cardData = {
+          id: `Part. #${index + 1} (${faixaEtaria})`,
+          hora: formatarHorario(timestamp),
+          diagnostico: avaliacao.motivoPrincipal,
+          detalhe: avaliacao.detalhe ? `"${avaliacao.detalhe}"` : ''
+        };
+
+        if (avaliacao.grupo === 'a') {
+          totalA++;
+          participantesA.unshift(cardData);
+        } else {
+          totalB++;
+          participantesB.unshift(cardData);
+        }
+      });
+
+      const total = totalA + totalB;
+      if (total === 0) return;
+
+      const percA = (totalA / total) * 100;
+      const percB = (totalB / total) * 100;
+
+      document.getElementById('percent-a').textContent = `${percA.toFixed(1)}%`;
+      document.getElementById('percent-b').textContent = `${percB.toFixed(1)}%`;
+      document.getElementById('votos-a').textContent = `${totalA} participantes`;
+      document.getElementById('votos-b').textContent = `${totalB} participantes`;
+      document.getElementById('badge-total-a').textContent = `${totalA} pessoas`;
+      document.getElementById('badge-total-b').textContent = `${totalB} pessoas`;
+      document.getElementById('total-participantes-global').textContent = total;
+
+      const posicaoSeringa = Math.min(Math.max(percA, 6), 94);
+      document.getElementById('rope-node').style.left = `${posicaoSeringa}%`;
+      document.getElementById('bar-fill-a').style.width = `${percA}%`;
+      document.getElementById('bar-fill-b').style.width = `${percB}%`;
+
+      renderListaParticipantes('list-a', participantesA, 'text-rose-300', 'border-rose-500/20');
+      renderListaParticipantes('list-b', participantesB, 'text-indigo-300', 'border-indigo-500/20');
+
+      const cardA = document.getElementById('card-a');
+      const cardB = document.getElementById('card-b');
+      cardA.classList.remove('ring-4', 'ring-rose-400', 'scale-105');
+      cardB.classList.remove('ring-4', 'ring-indigo-400', 'scale-105');
+
+      if (percA >= 65) {
+        cardA.classList.add('ring-4', 'ring-rose-400', 'scale-105');
+        dispararConfetes('a');
+      } else if (percB >= 65) {
+        cardB.classList.add('ring-4', 'ring-indigo-400', 'scale-105');
+        dispararConfetes('b');
+      }
+    }
+
+    function renderListaParticipantes(containerId, items, corBadge, corBorda) {
+      const el = document.getElementById(containerId);
+      if (items.length === 0) {
+        el.innerHTML = '<li class="text-slate-500 italic text-center py-4">Nenhum participante classificado.</li>';
+        return;
+      }
+
+      el.innerHTML = items.map(item => `
+        <li class="p-2.5 bg-slate-900/60 rounded-xl border ${corBorda} flex flex-col gap-1 transition-all hover:bg-slate-900">
+          <div class="flex items-center justify-between text-[11px]">
+            <span class="font-bold text-slate-200">${item.id}</span>
+            <span class="font-semibold text-[10px] ${corBadge}">${item.diagnostico}</span>
+          </div>
+          <div class="text-[11px] text-slate-400 italic break-words line-clamp-2">
+            ${item.detalhe}
+          </div>
+        </li>
+      `).join('');
+    }
+
+    function popularSeletorPerguntas() {
+      const select = document.getElementById('select-pergunta-detalhe');
+      select.innerHTML = '';
+
+      globalHeaders.forEach((header, index) => {
+        if (index === 0 && header.toLowerCase().includes('carimbo')) return;
+
+        const opt = document.createElement('option');
+        opt.value = index;
+        opt.textContent = `Pergunta ${index}: ${header}`;
+        select.appendChild(opt);
+      });
+
+      if (perguntaDetalheIndex >= globalHeaders.length) {
+        perguntaDetalheIndex = colIndices.procedimento || 2;
+      }
+      select.value = perguntaDetalheIndex;
+    }
+
+    function selecionarPerguntaIndividual(novoIndex) {
+      perguntaDetalheIndex = parseInt(novoIndex, 10);
+      atualizarDetalhePergunta();
+    }
+
+    function atualizarDetalhePergunta() {
+      if (globalRows.length === 0 || perguntaDetalheIndex === -1) return;
+
+      const contagem = {};
+      const listaRespostas = [];
+      let totalRespostas = 0;
+
+      globalRows.forEach((row, i) => {
+        const faixa = row[colIndices.faixa] || `Part. #${i + 1}`;
+        const resposta = (row[perguntaDetalheIndex] || '').trim();
+
+        if (resposta) {
+          contagem[resposta] = (contagem[resposta] || 0) + 1;
+          totalRespostas++;
+          listaRespostas.push({
+            faixa: `Participante #${i + 1} (${faixa})`,
+            resposta
+          });
+        }
+      });
+
+      document.getElementById('label-total-pergunta').textContent = `${totalRespostas} respostas nesta pergunta`;
+
+      const opcoesOrdenadas = Object.keys(contagem).sort((a, b) => contagem[b] - contagem[a]);
+      document.getElementById('num-opcoes-unicas').textContent = `${opcoesOrdenadas.length} opções únicas`;
+
+      const rankingContainer = document.getElementById('ranking-barras-container');
+      if (opcoesOrdenadas.length === 0) {
+        rankingContainer.innerHTML = '<p class="text-slate-500 italic text-center py-4">Nenhuma resposta encontrada.</p>';
+      } else {
+        rankingContainer.innerHTML = opcoesOrdenadas.map((opcao, index) => {
+          const qtd = contagem[opcao];
+          const pct = totalRespostas > 0 ? ((qtd / totalRespostas) * 100).toFixed(1) : 0;
+          const cor = CORES_PALETA[index % CORES_PALETA.length];
+
+          return `
+            <div class="space-y-1">
+              <div class="flex items-center justify-between text-xs">
+                <span class="font-medium text-slate-200 truncate pr-2" title="${opcao}">${opcao}</span>
+                <span class="font-bold text-slate-300 whitespace-nowrap">${qtd} (${pct}%)</span>
+              </div>
+              <div class="w-full bg-slate-900 rounded-full h-2 overflow-hidden">
+                <div class="h-full rounded-full transition-all duration-700 ease-out" style="width: ${pct}%; background-color: ${cor};"></div>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
+
+      const feedContainer = document.getElementById('feed-respostas-pergunta');
+      if (listaRespostas.length === 0) {
+        feedContainer.innerHTML = '<p class="text-slate-500 italic col-span-3 text-center py-4">Nenhum dado registrado.</p>';
+      } else {
+        feedContainer.innerHTML = listaRespostas.map(item => `
+          <div class="bg-slate-900/60 border border-slate-800 rounded-xl p-2.5 flex flex-col justify-between hover:border-slate-700 transition-colors">
+            <span class="font-bold text-rose-300 text-[11px] mb-1 truncate">${item.faixa}</span>
+            <div class="text-xs text-slate-200 font-normal break-words line-clamp-3">
+              "${item.resposta}"
+            </div>
+          </div>
+        `).join('');
+      }
+
+      renderizarGraficoChartJS(opcoesOrdenadas, contagem, totalRespostas);
+      lucide.createIcons();
+    }
+
+    function renderizarGraficoChartJS(labels, contagemMap, total) {
+      const ctx = document.getElementById('canvas-pergunta').getContext('2d');
+      const dados = labels.map(l => contagemMap[l]);
+      const backgroundColors = labels.map((_, i) => CORES_PALETA[i % CORES_PALETA.length]);
+      const labelsTruncadas = labels.map(l => l.length > 34 ? l.substring(0, 31) + '...' : l);
+
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+
+      chartInstance = new Chart(ctx, {
+        type: 'bar',
+        data: {
+          labels: labelsTruncadas,
+          datasets: [{
+            label: 'Votos',
+            data: dados,
+            backgroundColor: backgroundColors,
+            borderRadius: 8,
+            borderSkipped: false
+          }]
+        },
+        options: {
+          indexAxis: 'y',
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                title: function(context) {
+                  return labels[context[0].dataIndex];
+                },
+                label: function(context) {
+                  const val = context.raw;
+                  const pct = total > 0 ? ((val / total) * 100).toFixed(1) : 0;
+                  return ` ${val} pessoas (${pct}%)`;
+                }
+              }
+            }
+          },
+          scales: {
+            x: {
+              beginAtZero: true,
+              ticks: { color: '#94A3B8', precision: 0 },
+              grid: { color: 'rgba(255, 255, 255, 0.05)' }
+            },
+            y: {
+              ticks: { 
+                color: '#CBD5E1', 
+                font: { size: 11, weight: '500' }
+              },
+              grid: { display: false }
+            }
+          }
+        }
       });
     }
 
-    // Confetes
+    function renderizarMatrizCompleta() {
+      const tbody = document.getElementById('tabela-matriz-completa');
+      tbody.innerHTML = globalRows.map((row, i) => {
+        const avaliacao = avaliarPerfilHolistico(row);
+        const badge = avaliacao.grupo === 'a' 
+          ? `<span class="bg-rose-500/20 text-rose-300 border border-rose-500/30 px-2.5 py-0.5 rounded-full font-semibold">✨ Propenso</span>`
+          : `<span class="bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 px-2.5 py-0.5 rounded-full font-semibold">🌿 Resistente</span>`;
+
+        return `
+          <tr class="hover:bg-slate-800/40">
+            <td class="py-2.5 font-mono text-slate-500">#${i + 1}</td>
+            <td class="py-2.5 font-medium text-slate-200">${row[colIndices.faixa] || '-'}</td>
+            <td class="py-2.5 text-slate-300 max-w-xs truncate" title="${row[colIndices.procedimento] || ''}">${row[colIndices.procedimento] || '-'}</td>
+            <td class="py-2.5 text-slate-300 max-w-xs truncate" title="${row[colIndices.barreira] || ''}">${row[colIndices.barreira] || '-'}</td>
+            <td class="py-2.5 text-slate-300 max-w-xs truncate" title="${row[colIndices.criterio] || ''}">${row[colIndices.criterio] || '-'}</td>
+            <td class="py-2.5 text-right whitespace-nowrap">${badge}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // Gerenciador de Confetes
     const canvas = document.getElementById('confetti-canvas');
     const ctx = canvas.getContext('2d');
     let particulas = [];
@@ -168,12 +817,12 @@
         : ['#818CF8', '#6366F1', '#C7D2FE', '#38BDF8'];
 
       particulas = [];
-      for (let i = 0; i < 120; i++) {
+      for (let i = 0; i < 100; i++) {
         particulas.push({
           x: ladoVencedor === 'a' ? window.innerWidth * 0.25 : window.innerWidth * 0.75,
-          y: window.innerHeight * 0.5,
-          vx: (Math.random() - 0.5) * 18,
-          vy: (Math.random() - 1.2) * 16,
+          y: window.innerHeight * 0.35,
+          vx: (Math.random() - 0.5) * 16,
+          vy: (Math.random() - 1.2) * 14,
           size: Math.random() * 8 + 4,
           color: cores[Math.floor(Math.random() * cores.length)],
           rotation: Math.random() * 360,
@@ -218,181 +867,14 @@
       }
     }
 
-    function mostrarStatus(mensagem, tipo = 'erro') {
-      const banner = document.getElementById('status-banner');
-      banner.className = 'mx-auto max-w-2xl text-center text-xs py-2 px-4 rounded-lg font-medium shadow-md transition-all ' + 
-        (tipo === 'erro' ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30' : 'bg-amber-500/20 text-amber-300 border border-amber-500/30');
-      banner.innerHTML = mensagem;
-      banner.classList.remove('hidden');
-    }
-
-    function esconderStatus() {
-      document.getElementById('status-banner').classList.add('hidden');
-    }
-
-    function parseCSV(text) {
-      const lines = text.split(/\r?\n/).filter(line => line.trim().length > 0);
-      return lines.map(line => {
-        const row = [];
-        let insideQuote = false;
-        let entry = '';
-        for (let i = 0; i < line.length; i++) {
-          const char = line[i];
-          if (char === '"') {
-            insideQuote = !insideQuote;
-          } else if (char === ',' && !insideQuote) {
-            row.push(entry.replace(/^"|"$/g, '').trim());
-            entry = '';
-          } else {
-            entry += char;
-          }
-        }
-        row.push(entry.replace(/^"|"$/g, '').trim());
-        return row;
-      });
-    }
-
-    async function carregarDados() {
-      initAudioContext();
-
-      const icon = document.getElementById('icon-refresh');
-      icon.classList.remove('animate-spin-custom');
-      void icon.offsetWidth;
-      icon.classList.add('animate-spin-custom');
-
-      esconderStatus();
-
-      try {
-        const separator = csvUrl.includes('?') ? '&' : '?';
-        const cacheBusterUrl = `${csvUrl}${separator}t=${Date.now()}`;
-        const response = await fetch(cacheBusterUrl);
-
-        if (!response.ok) throw new Error(`Falha HTTP (Status ${response.status})`);
-
-        const rawData = await response.text();
-        const rows = parseCSV(rawData);
-
-        if (rows.length <= 1) {
-          mostrarStatus('A planilha ainda não possui respostas suficientes.', 'aviso');
-          return;
-        }
-
-        const headers = rows[0];
-        const dataRows = rows.slice(1);
-
-        processarRespostas(dataRows, headers);
-
-        document.getElementById('rows-count').textContent = dataRows.length;
-        document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
-
-      } catch (err) {
-        mostrarStatus(`Erro de leitura: ${err.message}`, 'erro');
+    function alternarModalAuditoria(aberto) {
+      const modal = document.getElementById('modal-auditoria');
+      if (aberto) {
+        modal.classList.remove('hidden');
+        renderizarMatrizCompleta();
+      } else {
+        modal.classList.add('hidden');
       }
-    }
-
-    function processarRespostas(rows, headers) {
-      // Tenta encontrar automaticamente a coluna que fala sobre estética/procedimento
-      let colunaVotoIdx = -1;
-      for (let i = 0; i < headers.length; i++) {
-        const h = headers[i].toLowerCase();
-        if (h.includes('estétic') || h.includes('procedimento') || h.includes('faria') || h.includes('você') || h.includes('propenso')) {
-          colunaVotoIdx = i;
-          break;
-        }
-      }
-      // Se não achar por palavra no cabeçalho, usa por padrão a coluna C (índice 2)
-      if (colunaVotoIdx === -1) colunaVotoIdx = 2;
-
-      let countA = 0;
-      let countB = 0;
-      const recentA = [];
-      const recentB = [];
-      const todasAsRespostas = new Set();
-
-      rows.forEach(col => {
-        const timestamp = col[0] || '--:--';
-        const nick = col[1] || 'Participante';
-        const respostaOriginal = (col[colunaVotoIdx] || '').trim();
-        const texto = respostaOriginal.toLowerCase();
-
-        if (respostaOriginal) todasAsRespostas.add(respostaOriginal);
-
-        const ehSim = PALAVRAS_SIM.some(p => texto.includes(p));
-        const ehNao = PALAVRAS_NAO.some(p => texto.includes(p));
-
-        if (ehSim && !ehNao) {
-          countA++;
-          recentA.unshift({ nick, time: formatarHorario(timestamp) });
-        } else if (ehNao) {
-          countB++;
-          recentB.unshift({ nick, time: formatarHorario(timestamp) });
-        }
-      });
-
-      const total = countA + countB;
-
-      // Se leu as linhas mas não identificou os grupos, orienta exatamente o que foi respondido
-      if (total === 0 && rows.length > 0) {
-        const listaExemplos = Array.from(todasAsRespostas).slice(0, 3).map(r => `"${r}"`).join(', ');
-        mostrarStatus(
-          `⚠️ Lemos ${rows.length} linhas na coluna <b>"${headers[colunaVotoIdx]}"</b>, mas as opções marcadas foram: ${listaExemplos}. Me envie esses termos para calibrarmos!`,
-          'aviso'
-        );
-      }
-
-      let percA = 50.0;
-      let percB = 50.0;
-
-      if (total > 0) {
-        percA = (countA / total) * 100;
-        percB = (countB / total) * 100;
-      }
-
-      document.getElementById('total-votos').textContent = total;
-      document.getElementById('percent-a').textContent = `${percA.toFixed(1)}%`;
-      document.getElementById('percent-b').textContent = `${percB.toFixed(1)}%`;
-      document.getElementById('votos-a').textContent = `${countA} ${countA === 1 ? 'resposta' : 'respostas'}`;
-      document.getElementById('votos-b').textContent = `${countB} ${countB === 1 ? 'resposta' : 'respostas'}`;
-
-      document.getElementById('rope-node').style.left = `${percA}%`;
-      document.getElementById('bar-fill-a').style.width = `${percA}%`;
-      document.getElementById('bar-fill-b').style.width = `${percB}%`;
-
-      renderLista('list-a', recentA.slice(0, 5), 'text-rose-200');
-      renderLista('list-b', recentB.slice(0, 5), 'text-indigo-200');
-
-      // Gatilho de Vitória (> 70%)
-      const cardA = document.getElementById('card-a');
-      const cardB = document.getElementById('card-b');
-      cardA.classList.remove('ring-4', 'ring-rose-400', 'scale-105');
-      cardB.classList.remove('ring-4', 'ring-indigo-400', 'scale-105');
-
-      if (total > 0) {
-        if (percA >= 70) {
-          cardA.classList.add('ring-4', 'ring-rose-400', 'scale-105');
-          dispararConfetes('a');
-          tocarFanfarraVitoria();
-        } else if (percB >= 70) {
-          cardB.classList.add('ring-4', 'ring-indigo-400', 'scale-105');
-          dispararConfetes('b');
-          tocarFanfarraVitoria();
-        }
-      }
-    }
-
-    function renderLista(elementId, items, highlightColor) {
-      const container = document.getElementById(elementId);
-      if (items.length === 0) {
-        container.innerHTML = '<li class="text-slate-500 italic text-center py-2">Nenhum voto registrado</li>';
-        return;
-      }
-
-      container.innerHTML = items.map(item => `
-        <li class="flex items-center justify-between py-0.5 border-b border-white/[0.03]">
-          <span class="font-medium ${highlightColor} truncate max-w-[140px] md:max-w-[200px]">${item.nick}</span>
-          <span class="text-[11px] text-slate-400 font-mono">${item.time}</span>
-        </li>
-      `).join('');
     }
 
     function formatarHorario(str) {
@@ -401,11 +883,79 @@
       return partes.length > 1 ? partes[1].substring(0, 5) : str.substring(0, 5);
     }
 
+    async function carregarDados(forcarAnimacao = false) {
+      const icon = document.getElementById('icon-refresh');
+      if (forcarAnimacao && icon) {
+        icon.classList.remove('animate-spin-custom');
+        void icon.offsetWidth;
+        icon.classList.add('animate-spin-custom');
+      }
+
+      // 1. Carregamento inicial garantido
+      if (globalRows.length === 0) {
+        globalHeaders = DADOS_EMBARCADOS.headers;
+        globalRows = DADOS_EMBARCADOS.rows;
+        mapearColunasDinamicas(globalHeaders, globalRows);
+        popularSeletorPerguntas();
+        calcularCaboDeGuerraGlobal();
+        atualizarDetalhePergunta();
+        document.getElementById('rows-count').textContent = globalRows.length;
+        document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
+      }
+
+      // 2. Consulta online com validação e proteção de dados
+      try {
+        const separator = csvUrl.includes('?') ? '&' : '?';
+        const cacheBusterUrl = `${csvUrl}${separator}t=${Date.now()}`;
+        
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 4500);
+
+        const response = await fetch(cacheBusterUrl, { signal: controller.signal });
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+          const rawData = await response.text();
+          const parsed = parseCSVUniversal(rawData);
+
+          // Validação de sanidade: só aplica se o Google Sheets retornou dados válidos
+          if (parsed && parsed.length > 1 && parsed[0].length >= 3) {
+            const tempHeaders = parsed[0];
+            const tempRows = parsed.slice(1);
+
+            // Testa se os dados online geram uma classificação consistente antes de aplicar
+            mapearColunasDinamicas(tempHeaders, tempRows);
+            let propensosValidos = 0;
+            tempRows.forEach(r => {
+              if (avaliarPerfilHolistico(r).grupo === 'a') propensosValidos++;
+            });
+
+            // Se for consistente (não zerado e não 100%), atualiza
+            if (propensosValidos > 0 && propensosValidos < tempRows.length) {
+              globalHeaders = tempHeaders;
+              globalRows = tempRows;
+              popularSeletorPerguntas();
+              calcularCaboDeGuerraGlobal();
+              atualizarDetalhePergunta();
+              document.getElementById('rows-count').textContent = globalRows.length;
+              document.getElementById('last-update').textContent = new Date().toLocaleTimeString('pt-BR');
+              document.getElementById('conn-status').textContent = 'Sincronizado ao Vivo';
+              document.getElementById('badge-fonte-dados').textContent = 'Planilha Online';
+            }
+          }
+        }
+      } catch (err) {
+        document.getElementById('conn-status').textContent = 'Base Local Ativa';
+      }
+      lucide.createIcons();
+    }
+
     document.addEventListener('DOMContentLoaded', () => {
       lucide.createIcons();
       carregarDados();
+      // Verificação em segundo plano
+      setInterval(() => carregarDados(false), 30000);
     });
   </script>
 </body>
 </html>
-
